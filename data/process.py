@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import xml.etree.ElementTree as et
-
-from blocks import blocks
-blassoc = {}
+from blocks import blocks_map
+import lzma
 
 def _boolean(name):
     bool_decode = {
@@ -38,8 +37,10 @@ def _codepoints(name):
         cps = self._p[name]
         if cps == '#':
             return [self._c]
-        else:
+        elif cps:
             return [int(cp, 16) for cp in cps.split(' ')]
+        else:
+            return []
     return method
 
 def _raw(name):
@@ -63,6 +64,20 @@ class Codepoint:
                 t = ell.attrib['type']
                 self._n.append((t,n))
 
+    @staticmethod
+    def from_el(el):
+        props = el.attrib
+
+        if 'cp' in props:
+            cps = (int(props['cp'], 16),) * 2
+        else:
+            cps = (int(props['first-cp'], 16),
+                    int(props['last-cp'], 16))
+
+        cp0, cpn = cps
+        for cp in range(cp0, cpn+1):
+            yield Codepoint(cp, el)
+
     def codepoint(self):
         return self._c
 
@@ -81,30 +96,23 @@ class Codepoint:
         return a
 
     def block(self):
-        bl = self._p['blk']
-        bl_ = None
-        cp = self._c
-        for b,e,n in blocks:
-            if b <= cp <= e:
-                bl_ = n
-                break
-        return bl, bl_
+        return blocks_map[self._p['blk']]
 
     category = _raw('gc')
     def comb_class(self):
         return int(self._p['ccc'])
 
     bidi_class = _raw('bc')
-    bidi_mirrored = _boolean('bidi_M')
+    bidi_mirrored = _boolean('Bidi_M')
     bidi_mirror = _codepoint('bmg')
-    bidi_control = _boolean('bidi_C')
+    bidi_control = _boolean('Bidi_C')
     bidi_bracket = _codepoint('bpb')
     def bidi_bracket_type(self):
         return {
             'n': None,
             'o': '(',
             'c': ')'
-        }[self._p['bt']]
+        }[self._p['bpt']]
 
     decomp_type = _raw('dt')
     decomp_map = _codepoints('dm')
@@ -116,10 +124,10 @@ class Codepoint:
     quick_nfkd = _boolean('NFKD_QC')
 
     # deprecated
-    expanding_nfc = _boolean('NFC_QC')
-    expanding_nfd = _boolean('NFD_QC')
-    expanding_nfkc = _boolean('NFKC_QC')
-    expanding_nfkd = _boolean('NFKD_QC')
+    expanding_nfc = _boolean('XO_NFC')
+    expanding_nfd = _boolean('XO_NFD')
+    expanding_nfkc = _boolean('XO_NFKC')
+    expanding_nfkd = _boolean('XO_NFKD')
     casefoldclosure_nfkc = _codepoints('FC_NFKC')
     iso_comment = _raw('isc')
 
@@ -169,7 +177,7 @@ class Codepoint:
     hangul_syll_type = _raw('hst')
     jamo_short_name = _raw('JSN')
     indic_category_syll = _raw('InSC')
-    indic_category_matra = _raw('InMC')
+    #indic_category_matra = _raw('InMC') # removed
     indic_category_pos = _raw('InPC')
 
     id_start = _boolean('IDS')
@@ -208,9 +216,9 @@ class Codepoint:
     # deprecated
     graph_link = _boolean('Gr_Link')
 
-    break_graph_cluster = _boolean('GCB')
-    break_word = _boolean('WB')
-    break_sentence = _boolean('SB')
+    break_graph_cluster = _raw('GCB')
+    break_word = _raw('WB')
+    break_sentence = _raw('SB')
 
     ideo = _boolean('Ideo')
     ideo_unified = _boolean('UIdeo')
@@ -225,67 +233,38 @@ class Codepoint:
     # unihan
     # tangut
 
+    def all(self):
+        attrs = ['codepoint', 'names', 'age', 'block', 'category', 'comb_class', 'bidi_class', 'bidi_mirrored', 'bidi_mirror', 'bidi_control', 'bidi_bracket', 'bidi_bracket_type', 'decomp_type', 'decomp_map', 'comp_excl', 'comp_excl_full', 'quick_nfc', 'quick_nfd', 'quick_nfkc', 'quick_nfkd', 'expanding_nfc', 'expanding_nfd', 'expanding_nfkc', 'expanding_nfkd', 'casefoldclosure_nfkc', 'iso_comment', 'numeric_type', 'numeric_value', 'join_class', 'join_group', 'join_control', 'libebreak', 'ea_width', 'case_is_upper', 'case_is_upper_other', 'case_is_lower', 'case_is_lower_other', 'case_upper', 'case_upper_simple', 'case_lower', 'case_lower_simple', 'case_title', 'case_title_simple', 'case_fold', 'case_fold_simple', 'case_fold_nfkc', 'case_ignorable', 'cased', 'case_changes_casefold', 'case_changes_casefold_nfkc', 'case_changes_casemap', 'case_changes_lower', 'case_changes_upper', 'case_changes_title', 'script', 'script_extensions', 'hangul_syll_type', 'jamo_short_name', 'indic_category_syll', 'indic_category_pos', 'id_start', 'id_start_other', 'id_start_nfkc', 'id_cont', 'id_cont_other', 'id_cont_nfkc', 'patt_syntax', 'patt_white', 'dash', 'quot', 'term_punc', 'term_sentence', 'diacritic', 'extender', 'prepended_concatenation_mark', 'soft_dotted', 'alpha', 'alpha_other', 'math', 'math_other', 'hex_digit', 'hex_digit_ascii', 'default_ignorable', 'default_ignorable_other', 'logical_order_exception', 'white', 'hyphen', 'graph_base', 'graph_ext', 'graph_ext_other', 'graph_link', 'break_graph_cluster', 'break_word', 'break_sentence', 'ideo', 'ideo_unified', 'ideo_desc_seq_bin_op', 'ideo_desc_seq_trin_op', 'ideo_desc_seq_radical', 'deprecated', 'var_sel', 'nonchar']
+
+        return {attr: getattr(self, attr)() for attr in attrs}
+
+        ret = {}
+        for attr in attrs:
+            m = getattr(self, attr)
+            try:
+                ret[attr] = m()
+            except:
+                print('%x'%self._c, attr)
+                raise
+        return ret
 
 
-noch = 0
-len1 = 0
-len2 = 0
+try:
+    with lzma.open('ucd.xml.xz', 'rb') as f:
+        for (_, el) in et.iterparse(f):
+            if '}' in el.tag:
+                el.tag = el.tag.split('}', 1)[1]
 
-tmp=0
-tmp2=set()
+            if el.tag in ("char", "reserved", "noncharacter", "surrogate"):
+                for cp in Codepoint.from_el(el):
+                    c = cp.codepoint()
+                    if c > 1000:
+                        pass#raise StopIteration
 
-for (_, el) in et.iterparse('ucd.xml'):
-    if '}' in el.tag:
-        el.tag = el.tag.split('}', 1)[1]
+                    attrs = cp.all()
+                    if c % 8192 == 0:
+                        print('%x' % c)
 
-    if el.tag in ("char", "reserved", "noncharacter"):
-        props = el.attrib
-
-        try:
-            if 'cp' in props:
-                cp = int(props['cp'], 16)
-                ncp = 1
-            else:
-                cp = (int(props['first-cp'], 16),
-                        int(props['last-cp'], 16))
-                ncp = cp[1]-cp[0]
-
-            names = []
-            for ell in el:
-                if ell.tag == "name-alias":
-                    n = ell.attrib['alias']
-                    t = ell.attrib['type']
-                    names.append((n,t))
-            if props['na']:
-                names.append((props['na'],True))
-                len1 += len(props['na'])
-            if props['na1']:
-                names.append((props['na1'],False))
-
-            nv = props['nv']
-            ccc = props['ccc']
-            bpb = int(props['bpb'], 16) if props['bpb']!='#' else 0
-
-            if props['scx']!='#':
-                s=len(props['scx'].split(' '))
-                if s > 1:
-                    tmp2.add(props['scx'])
-                else:
-                    tmp+=ncp
-
-            #print("cp: %x" % cp)
-            for n,t in names:
-                #print("name[%s]: %s" % (t,n))
-                len2 += len(n)
-            #print()
-            #input()
-
-            noch += 1
-
-        except:
-            print(props)
-
-        el.clear()
-
-print(tmp,tmp2,len(tmp2))
-print(noch, len1, len2)
+                el.clear()
+except StopIteration:
+    print('...')
