@@ -2,4 +2,4 @@ target
 Cargo.lock
 *.swp
 __pycache__
-ucd.xml
+.DS_Store
