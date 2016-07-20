@@ -11,7 +11,8 @@ wrapper = textwrap.TextWrapper(
         subsequent_indent='  ')
 
 def enum(name, vals, file=None):
-    print("enum %s {" % name, file=file)
+    print("#[derive(Clone)]", file=file)
+    print("pub enum %s {" % name, file=file)
     for line in wrapper.wrap(', '.join(vals)):
         print(line, file=file)
     print("}\n", file=file)

@@ -5,35 +5,60 @@ use std::io::BufReader;
 use std::io::prelude::*;
 use std::fs::File;
 
-//pub mod tables;
-
-#[test]
-#[ignore]
-fn age() {
-    let f = File::open("./tests/data/age.txt").unwrap();
+fn test<F>(path: &str, func: F)
+    where F: Fn(usize, Codepoint, &str) -> ()
+{
+    let f = File::open(path).unwrap();
     let reader = BufReader::new(f);
 
     let mut max: usize = 0;
     for (i, line) in reader.lines().enumerate() {
         max = i;
-        let chars = line.unwrap().chars().collect::<Vec<char>>();
+        let line = line.unwrap();
 
         assert!(i < 0x110000);
         let c = unsafe { char::from_u32_unchecked(i as u32) };
         let cp = Codepoint(c);
 
-        let a1 = cp.age();
-        let a2 = if chars[0] == '-' {
-            None
-        } else {
-            Some((chars[0].to_digit(10).unwrap() as u8,
-                  chars[1].to_digit(10).unwrap() as u8))
-        };
-
-        if a1 != a2 {
-            panic!("{}: {:?} {:?}", i, a1, a2);
-        }
+        func(i, cp, &line);
     }
 
     assert!(max == 0x10ffff);
 }
+
+#[test]
+#[ignore]
+fn age() { test("./tests/data/age.txt", |i, cp, line| {
+    let chars = line.chars().collect::<Vec<char>>();
+
+    let a1 = cp.age();
+    let a2 = if chars[0] == '-' {
+        None
+    } else {
+        Some((chars[0].to_digit(10).unwrap() as u8,
+              chars[1].to_digit(10).unwrap() as u8))
+    };
+
+    if a1 != a2 {
+        panic!("{}: {:?} {:?}", i, a1, a2);
+    }
+});}
+
+#[test]
+#[ignore]
+fn block() { test("./tests/data/block.txt", |i, cp, line| {
+    let b1 = match cp.block() {
+        None => None,
+        Some(blk) => Some(blk as u32)
+    };
+
+    let b2 = if line.chars().next() == Some('-') {
+        None
+    } else {
+        Some(line.parse::<u32>().unwrap())
+    };
+
+    if b1 != b2 {
+        panic!("{}: {:?} {:?}", i, b1, b2);
+    }
+});}

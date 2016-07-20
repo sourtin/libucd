@@ -283,9 +283,17 @@ unihan = ['kAccountingNumeric', 'kAlternateHanYu', 'kAlternateJEF', 'kAlternateK
 # tangut db is complete wrt fields
 tangut = ['kRSTUnicode', 'kTGT_MergedSrc']
 
+def db_iter(path='ucd.xml.xz'):
+    with lzma.open(path, 'rb') as f:
+        for (_, el) in et.iterparse(f):
+            if '}' in el.tag:
+                el.tag = el.tag.split('}', 1)[1]
+            yield el
+            el.clear()
+
 def cp_iter(path='ucd.xml.xz', debug=True):
     try:
-        with lzma.open('ucd.xml.xz', 'rb') as f:
+        with lzma.open(path, 'rb') as f:
             for (_, el) in et.iterparse(f):
                 if '}' in el.tag:
                     el.tag = el.tag.split('}', 1)[1]
@@ -294,11 +302,8 @@ def cp_iter(path='ucd.xml.xz', debug=True):
                     for cp in Codepoint.from_el(el):
                         yield cp
                         c = cp.codepoint()
-                        #if c > 16382:
-                        #    raise StopIteration
                         if debug and c % 8192 == 0:
                             print('.', end='', flush=True)
-                            #print('%x' % c)
                     el.clear()
     except StopIteration:
         print('###')
