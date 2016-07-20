@@ -36,7 +36,7 @@ def _codepoints(name):
     def method(self):
         cps = self._p[name]
         if cps == '#':
-            return [self._c]
+            return [True]
         elif cps:
             return [int(cp, 16) for cp in cps.split(' ')]
         else:
@@ -234,7 +234,36 @@ class Codepoint:
     # tangut
 
     def all(self):
-        attrs = ['codepoint', 'names', 'age', 'block', 'category', 'comb_class', 'bidi_class', 'bidi_mirrored', 'bidi_mirror', 'bidi_control', 'bidi_bracket', 'bidi_bracket_type', 'decomp_type', 'decomp_map', 'comp_excl', 'comp_excl_full', 'quick_nfc', 'quick_nfd', 'quick_nfkc', 'quick_nfkd', 'expanding_nfc', 'expanding_nfd', 'expanding_nfkc', 'expanding_nfkd', 'casefoldclosure_nfkc', 'iso_comment', 'numeric_type', 'numeric_value', 'join_class', 'join_group', 'join_control', 'libebreak', 'ea_width', 'case_is_upper', 'case_is_upper_other', 'case_is_lower', 'case_is_lower_other', 'case_upper', 'case_upper_simple', 'case_lower', 'case_lower_simple', 'case_title', 'case_title_simple', 'case_fold', 'case_fold_simple', 'case_fold_nfkc', 'case_ignorable', 'cased', 'case_changes_casefold', 'case_changes_casefold_nfkc', 'case_changes_casemap', 'case_changes_lower', 'case_changes_upper', 'case_changes_title', 'script', 'script_extensions', 'hangul_syll_type', 'jamo_short_name', 'indic_category_syll', 'indic_category_pos', 'id_start', 'id_start_other', 'id_start_nfkc', 'id_cont', 'id_cont_other', 'id_cont_nfkc', 'patt_syntax', 'patt_white', 'dash', 'quot', 'term_punc', 'term_sentence', 'diacritic', 'extender', 'prepended_concatenation_mark', 'soft_dotted', 'alpha', 'alpha_other', 'math', 'math_other', 'hex_digit', 'hex_digit_ascii', 'default_ignorable', 'default_ignorable_other', 'logical_order_exception', 'white', 'hyphen', 'graph_base', 'graph_ext', 'graph_ext_other', 'graph_link', 'break_graph_cluster', 'break_word', 'break_sentence', 'ideo', 'ideo_unified', 'ideo_desc_seq_bin_op', 'ideo_desc_seq_trin_op', 'ideo_desc_seq_radical', 'deprecated', 'var_sel', 'nonchar']
+        attrs = ['codepoint', 'names', 'age', 'block', 'category', 'comb_class',
+                'bidi_class', 'bidi_mirrored', 'bidi_mirror', 'bidi_control',
+                'bidi_bracket', 'bidi_bracket_type', 'decomp_type', 'decomp_map',
+                'comp_excl', 'comp_excl_full', 'quick_nfc', 'quick_nfd',
+                'quick_nfkc', 'quick_nfkd', 'expanding_nfc', 'expanding_nfd',
+                'expanding_nfkc', 'expanding_nfkd', 'casefoldclosure_nfkc',
+                'iso_comment', 'numeric_type', 'numeric_value', 'join_class',
+                'join_group', 'join_control', 'libebreak', 'ea_width',
+                'case_is_upper', 'case_is_upper_other', 'case_is_lower',
+                'case_is_lower_other', 'case_upper', 'case_upper_simple',
+                'case_lower', 'case_lower_simple', 'case_title',
+                'case_title_simple', 'case_fold', 'case_fold_simple',
+                'case_fold_nfkc', 'case_ignorable', 'cased',
+                'case_changes_casefold', 'case_changes_casefold_nfkc',
+                'case_changes_casemap', 'case_changes_lower',
+                'case_changes_upper', 'case_changes_title', 'script',
+                'script_extensions', 'hangul_syll_type', 'jamo_short_name',
+                'indic_category_syll', 'indic_category_pos', 'id_start',
+                'id_start_other', 'id_start_nfkc', 'id_cont', 'id_cont_other',
+                'id_cont_nfkc', 'patt_syntax', 'patt_white', 'dash', 'quot',
+                'term_punc', 'term_sentence', 'diacritic', 'extender',
+                'prepended_concatenation_mark', 'soft_dotted', 'alpha',
+                'alpha_other', 'math', 'math_other', 'hex_digit',
+                'hex_digit_ascii', 'default_ignorable',
+                'default_ignorable_other', 'logical_order_exception', 'white',
+                'hyphen', 'graph_base', 'graph_ext', 'graph_ext_other',
+                'graph_link', 'break_graph_cluster', 'break_word',
+                'break_sentence', 'ideo', 'ideo_unified',
+                'ideo_desc_seq_bin_op', 'ideo_desc_seq_trin_op',
+                'ideo_desc_seq_radical', 'deprecated', 'var_sel', 'nonchar']
 
         return {attr: getattr(self, attr)() for attr in attrs}
 
@@ -248,23 +277,130 @@ class Codepoint:
                 raise
         return ret
 
+# unihan db is sparse wrt fields
+unihan = ['kAccountingNumeric', 'kAlternateHanYu', 'kAlternateJEF', 'kAlternateKangXi', 'kAlternateMorohashi', 'kBigFive ', 'kCCCII', 'kCNS1986', 'kCNS1992', 'kCangjie', 'kCantonese', 'kCheungBauer', 'kCheungBauerIndex', 'kCihaiT', 'kCompatibilityVariant', 'kCowles', 'kDaeJaweon', 'kDefinition', 'kEACC', 'kFenn', 'kFennIndex', 'kFourCornerCode', 'kFrequency', 'kGB0', 'kGB1', 'kGB3', 'kGB5', 'kGB7', 'kGB8', 'kGradeLevel', 'kGSR', 'kHangul', 'kHanYu', 'kHanyuPinlu', 'kHanyuPinyin', 'kHDZRadBreak', 'kHKGlyph', 'kHKSCS', 'kIBMJapan', 'kIICore', 'kIRGDaeJaweon', 'kIRGDaiKanwaZiten', 'kIRGHanyuDaZidian', 'kIRGKangXi', 'kIRG_GSource', 'kIRG_HSource', 'kIRG_KPSource', 'kIRG_KSource', 'kIRG_TSource', 'kIRG_USource', 'kJa', 'kJHJ', 'kJIS0213', 'kJapaneseKun', 'kJapaneseOn', 'kJis0', 'kJis1', 'kKPS0', 'kKPS1', 'kKSC0', 'kKSC1', 'kKangXi', 'kKarlgren', 'kKorean', 'kLau', 'kMainlandTelegraph', 'kMandarin', 'kMatthews', 'kMeyerWempe', 'kMorohashi', 'kNelson', 'kOtherNumeric', 'kPhonetic', 'kPrimaryNumeric', 'kPseudoGB1', 'kRSAdobe_Japan1_6', 'kRSJapanese', 'kRSKanWa', 'kRSKangXi', 'kRSKorean', 'kRSMerged', 'kRSUnicode', 'kSBGY', 'kSemanticVariant', 'kSimplifiedVariant', 'kSpecializedSemanticVariant', 'kTaiwanTelegraph', 'kTang', 'kTotalStrokes', 'kTraditionalVariant', 'kVietnamese', 'kXHC1983', 'kWubi', 'kXerox', 'kZVariant']
 
-try:
-    with lzma.open('ucd.xml.xz', 'rb') as f:
-        for (_, el) in et.iterparse(f):
-            if '}' in el.tag:
-                el.tag = el.tag.split('}', 1)[1]
+# tangut db is complete wrt fields
+tangut = ['kRSTUnicode', 'kTGT_MergedSrc']
 
-            if el.tag in ("char", "reserved", "noncharacter", "surrogate"):
-                for cp in Codepoint.from_el(el):
-                    c = cp.codepoint()
-                    if c > 1000:
-                        pass#raise StopIteration
+def cp_iter(path='ucd.xml.xz', debug=True):
+    try:
+        with lzma.open('ucd.xml.xz', 'rb') as f:
+            for (_, el) in et.iterparse(f):
+                if '}' in el.tag:
+                    el.tag = el.tag.split('}', 1)[1]
 
-                    attrs = cp.all()
-                    if c % 8192 == 0:
-                        print('%x' % c)
+                if el.tag in ("char", "reserved", "noncharacter", "surrogate"):
+                    for cp in Codepoint.from_el(el):
+                        yield cp
+                        c = cp.codepoint()
+                        #if c > 16382:
+                        #    raise StopIteration
+                        if debug and c % 8192 == 0:
+                            print('.', end='', flush=True)
+                            #print('%x' % c)
+                    el.clear()
+    except StopIteration:
+        print('###')
+    print()
 
-                el.clear()
-except StopIteration:
-    print('...')
+# count codepoints for each value of a property
+# for each property in ms
+def unicnts(*ms):
+    ret = {m:{} for m in ms}
+    for cp in cp_iter():
+        for m in ms:
+            f = getattr(cp, m)
+            v = f()
+            if v in ret[m]:
+                ret[m][v] += 1
+            else:
+                ret[m][v] = 1
+    return ret
+
+# find the set of contiguous ranges mapped to by m
+def cprng_to(m):
+    ranges = []
+    for cp in cp_iter():
+        v = getattr(cp, m)()
+        if v is True or v is None:
+            continue
+        inr = False
+        for ab in ranges:
+            a,b = ab
+            if a <= v <= b:
+                inr = True
+                break
+        if inr: continue
+
+        ranges.append((v,v))
+        ranges.sort()
+        r2 = []
+        a,b = ranges[0]
+        for c,d in ranges[1:]:
+            if c <= b + 1:
+                b=d
+            else:
+                r2.append((a,b))
+                a,b=c,d
+        r2.append((a,b))
+        ranges = r2
+    return ranges
+
+# find the set of contiguous ranges that
+# map to a non-default codepoint
+def cprng_from(m):
+    ranges = []
+    for cp in cp_iter():
+        v = getattr(cp, m)()
+        if v is True or v is None:
+            continue
+
+        cx = cp.codepoint()
+        inr = False
+        for ab in ranges:
+            a,b = ab
+            if a <= cx <= b:
+                inr = True
+                break
+        if inr: continue
+
+        if ranges:
+            a, b = ranges[-1]
+            if b + 1 == cx:
+                ranges[-1] = a,cx
+                continue
+        ranges.append((cx,cx))
+    return ranges
+
+# find the set of contiguous ranges that
+# map to each value of m, for each
+# property m in ms
+def cprngs_by(*ms):
+    ranges__ = {m:{} for m in ms}
+    for cp in cp_iter():
+        for m in ms:
+            ranges_ = ranges__[m]
+            v = getattr(cp, m)()
+            if v not in ranges_:
+                ranges_[v] = []
+            ranges = ranges_[v]
+
+            cx = cp.codepoint()
+            inr = False
+            for ab in ranges:
+                a,b = ab
+                if a <= cx <= b:
+                    inr = True
+                    break
+            if inr: continue
+
+            if ranges:
+                a, b = ranges[-1]
+                if b + 1 == cx:
+                    ranges[-1] = a,cx
+                    continue
+            ranges.append((cx,cx))
+    return ranges__
+def cprng_by(m):
+    return cprngs_by(m)[m]
