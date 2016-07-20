@@ -8,6 +8,7 @@ use std::fs::File;
 //pub mod tables;
 
 #[test]
+#[ignore]
 fn age() {
     let f = File::open("./tests/data/age.txt").unwrap();
     let reader = BufReader::new(f);
