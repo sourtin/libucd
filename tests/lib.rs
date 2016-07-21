@@ -27,7 +27,6 @@ fn test<F>(path: &str, func: F)
 }
 
 #[test]
-#[ignore]
 fn age() { test("./tests/data/age.txt", |i, cp, line| {
     let chars = line.chars().collect::<Vec<char>>();
 
@@ -39,13 +38,10 @@ fn age() { test("./tests/data/age.txt", |i, cp, line| {
               chars[1].to_digit(10).unwrap() as u8))
     };
 
-    if a1 != a2 {
-        panic!("{}: {:?} {:?}", i, a1, a2);
-    }
+    if a1 != a2 { panic!("{}: {:?} {:?}", i, a1, a2); }
 });}
 
 #[test]
-#[ignore]
 fn block() { test("./tests/data/block.txt", |i, cp, line| {
     let b1 = match cp.block() {
         None => None,
@@ -58,7 +54,19 @@ fn block() { test("./tests/data/block.txt", |i, cp, line| {
         Some(line.parse::<u32>().unwrap())
     };
 
-    if b1 != b2 {
-        panic!("{}: {:?} {:?}", i, b1, b2);
-    }
+    if b1 != b2 { panic!("{}: {:?} {:?}", i, b1, b2); }
+});}
+
+#[test]
+fn category() { test("./tests/data/cat.txt", |i, cp, line| {
+    let c1 = cp.category() as u32;
+    let c2 = line.parse::<u32>().unwrap();
+    if c1 != c2 { panic!("{}: {:?} {:?}", i, c1, c2); }
+});}
+
+#[test]
+fn combining_class() { test("./tests/data/ccc.txt", |i, cp, line| {
+    let c1 = cp.combining_class() as u32;
+    let c2 = line.parse::<u32>().unwrap();
+    if c1 != c2 { panic!("{}: {:?} {:?}", i, c1, c2); }
 });}
