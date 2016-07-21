@@ -23,16 +23,13 @@ def table(name, type, vals, file=None):
         print(line, file=file)
     print("];\n", file=file)
 
+def xcp(cp):
+    cp3 = cp%256; cp>>=8
+    cp2 = cp%256; cp>>=8
+    return "(%d,%d,%d)" % (cp,cp2,cp3)
+
 def xrng(ri, rj, dat):
-    ri3 = ri%256; ri>>=8
-    ri2 = ri%256; ri>>=8
-    rit = "(%d,%d,%d)" % (ri,ri2,ri3)
-
-    rj3 = rj%256; rj>>=8
-    rj2 = rj%256; rj>>=8
-    rjt = "(%d,%d,%d)" % (rj,rj2,rj3)
-
-    return "(%s,%s,%s)" % (rit,rjt,dat)
+    return "(%s,%s,%s)" % (xcp(ri),xcp(rj),dat)
 
 def transformed(type_sig, transfn, table_name, ranges, default, file=None):
     t_ = []

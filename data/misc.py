@@ -17,3 +17,5 @@ bidicl_alias = [('L', 'LeftToRight'), ('R', 'RightToLeft'), ('AL', 'ArabicLetter
                 ('LRO', 'LeftToRightOverride'), ('RLE', 'RightToLeftEmbedding'), ('RLO', 'RightToLeftOverride'),
                 ('PDF', 'PopDirectionalFormat'), ('LRI', 'LeftToRightIsolate'), ('RLI', 'RightToLeftIsolate'),
                 ('FSI', 'FirstStrongIsolate'), ('PDI', 'PopDirectionalIsolate')]
+
+nt_alias = [('Nu', 'Numeric'), ('De', 'Decimal'), ('Di', 'Digit')]

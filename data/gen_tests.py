@@ -1,20 +1,27 @@
 #!/usr/bin/env python3
 from generate import *
 from blocks import blocks
-from misc import cat_alias, bidicl_alias
+from misc import *
 
-bl_idx = {None: '-'}
-for i, (_,_,block) in enumerate(blocks):
-    bl_idx[block] = '%d' % i
-cat_idx = {}
-for i, (cat, _) in enumerate(cat_alias):
-    cat_idx[cat] = '%d' % i
+def edx(alias, default=None):
+    idx = {}
+    for i, (n, _) in enumerate(alias):
+        idx[n] = '%d' % i
+    if default not in idx:
+        idx[default] = ''
+    return idx
 
 if False:
     with open(base_test % "age", 'w') as f_age, \
          open(base_test % "block", 'w') as f_blk, \
          open(base_test % "cat", 'w') as f_cat, \
          open(base_test % "ccc", 'w') as f_ccc:
+
+        bl_idx = {None: '-'}
+        for i, (_,_,block) in enumerate(blocks):
+            bl_idx[block] = '%d' % i
+        cat_idx = edx(cat_alias)
+
         for cp in cp_iter():
             # age
             a = cp.age()
@@ -33,11 +40,6 @@ if False:
             # canonical combining class
             print('%d' % cp.comb_class(), file=f_ccc)
 
-bidicl_idx = {}
-for i, (cls, _) in enumerate(bidicl_alias):
-    bidicl_idx[cls] = '%d' % i
-bidipbt = {None: '-', '(': '(', ')': ')'}
-
 if False:
     with open(base_test % "bidi-control", 'w') as f_bctl, \
          open(base_test % "bidi-class", 'w') as f_bcls, \
@@ -45,6 +47,10 @@ if False:
          open(base_test % "bidi-bratype", 'w') as f_bbt, \
          open(base_test % "bidi-mirror", 'w') as f_bmr, \
          open(base_test % "bidi-paired", 'w') as f_bpb:
+
+        bidicl_idx = edx(bidicl_alias)
+        bidipbt = {None: '-', '(': '(', ')': ')'}
+
         for cp in cp_iter():
             print('%d' % cp.bidi_control(), file=f_bctl)
             print(bidicl_idx[cp.bidi_class()], file=f_bcls)
@@ -58,3 +64,12 @@ if False:
             b = cp.bidi_bracket()
             b2 = b if b is not True else cp.codepoint()
             print('%d' % b2, file=f_bpb)
+
+with open(base_test % "numval", 'w') as f_nv, \
+     open(base_test % "numtype", 'w') as f_nt:
+
+    nt_idx = edx(nt_alias, 'None')
+
+    for cp in cp_iter():
+        print('%d,%d'%cp.numeric_value(), file=f_nv)
+        print(nt_idx[cp.numeric_type()], file=f_nt)
