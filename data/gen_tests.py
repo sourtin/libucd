@@ -3,12 +3,10 @@ from generate import *
 from blocks import blocks
 from misc import *
 
-def edx(alias, default=None):
+def edx(alias, default='~~~~~~~~~~~~~~'):
     idx = {}
     for i, (n, _) in enumerate(alias):
         idx[n] = '%d' % i
-    if default not in idx:
-        idx[default] = ''
     return idx
 
 if False:
@@ -23,7 +21,6 @@ if False:
         cat_idx = edx(cat_alias)
 
         for cp in cp_iter():
-            # age
             a = cp.age()
             if a is None: print("-", file=f_age)
             else: print(a[0]+a[2], file=f_age)
@@ -32,12 +29,18 @@ if False:
             #  caution, assumes that the enum has
             #  retained its indexing, otherwise
             #  test will be corrupted
+            #
+            #  unlike the enums defined in misc.py,
+            #  the block enums are only guaranteed
+            #  valid for v9.0.0, as the actual
+            #  coded enum is recalculated directly
+            #  from the database, whereas the one
+            #  we use here is a hardcoded map from
+            #  the blk property, which can't be
+            #  robustly calculated
             print(bl_idx[cp.block()], file=f_blk)
 
-            # category
             print(cat_idx[cp.category()], file=f_cat)
-
-            # canonical combining class
             print('%d' % cp.comb_class(), file=f_ccc)
 
 if False:
@@ -66,10 +69,17 @@ if False:
             print('%d' % b2, file=f_bpb)
 
 with open(base_test % "numval", 'w') as f_nv, \
-     open(base_test % "numtype", 'w') as f_nt:
+     open(base_test % "numtype", 'w') as f_nt, \
+     open(base_test % "eawidth", 'w') as f_ea, \
+     open(base_test % "linebreak", 'w') as f_lb:
 
     nt_idx = edx(nt_alias, 'None')
+    ea_idx = edx(ea_alias)
+    lb_idx = edx(lb_alias, 'XX')
 
     for cp in cp_iter():
         print('%d,%d'%cp.numeric_value(), file=f_nv)
         print(nt_idx[cp.numeric_type()], file=f_nt)
+        print(ea_idx[cp.ea_width()], file=f_ea)
+        print(lb_idx[cp.linebreak()], file=f_lb)
+

@@ -85,6 +85,9 @@ impl ::Codepoint {
     pub fn bidi_paired_bracket(self) -> char { map16(&UCD_BIDI_PAIRED, self.0).unwrap_or(self.0) }
 
     // misc
+    pub fn east_asian_width(self) -> EastAsianWidth {
+        search_range(&UCD_EAWIDTH, self.0).unwrap_or(EastAsianWidth::Neutral) }
+    pub fn linebreak_class(self) -> Option<LinebreakClass> { search_range(&UCD_LB, self.0) }
     pub fn numeric_type(self) -> Option<NumericType> { search_range(&UCD_NUMTYPE, self.0) }
     pub fn numeric_value(self) -> Option<Number> {
         search(&UCD_NUMVAL, self.0).map(|i| {

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 from generate import *
-from misc import nt_alias
+from misc import nt_alias, ea_alias, lb_alias
 
 with open(base % "misc", "w") as f:
-    ranges = cprngs_by('numeric_type', 'numeric_value')
+    ranges = cprngs_by('numeric_type', 'numeric_value',
+            'linebreak', 'ea_width')
             #'join_class', 'join_group', 'join_control',
-            #'linebreak', 'ea_width',
             #'script', 'script_extensions',
             #
 
@@ -40,5 +40,6 @@ with open(base % "misc", "w") as f:
     t_nv.sort()
     table("UCD_NUMVAL", "[((u8,u8,u8), u8)]", map(lambda x:x[1], t_nv), file=f)
 
-    # numeric type
     enummed("NumericType", nt_alias, "UCD_NUMTYPE", ranges['numeric_type'], 'None', file=f)
+    enummed("EastAsianWidth", ea_alias, "UCD_EAWIDTH", ranges['ea_width'], 'N', file=f)
+    enummed("LinebreakClass", lb_alias, "UCD_LB", ranges['linebreak'], 'XX', file=f)
