@@ -302,6 +302,8 @@ def cp_iter(path='ucd.xml.xz', debug=True):
                     for cp in Codepoint.from_el(el):
                         yield cp
                         c = cp.codepoint()
+                        if debug and c > 1000:
+                            pass#raise StopIteration
                         if debug and c % 8192 == 0:
                             print('.', end='', flush=True)
                     el.clear()
