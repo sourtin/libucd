@@ -1,5 +1,4 @@
-use ::tables::general::*;
-use ::tables::bidi::*;
+use ::tables::*;
 use core::cmp::Ordering::{Equal, Less, Greater};
 use core::char;
 
@@ -52,6 +51,12 @@ pub fn map16(table: &[(u16,u16)], cp: char) -> Option<char> {
     }
 }
 
+#[derive(Clone,Copy,Eq,PartialEq,Debug,Ord,PartialOrd)]
+pub enum Number {
+    Integer(i64),
+    Rational(i32,u32)
+}
+
 impl ::Codepoint {
     // general
     pub fn age(self) -> Option<(u8,u8)> { search_range(&UCD_AGE, self.0) }
@@ -78,4 +83,15 @@ impl ::Codepoint {
         search_range(&UCD_BIDI_BRATYPE, self.0) }
     pub fn bidi_mirror(self) -> Option<char> { map16(&UCD_BIDI_MIRROR, self.0) }
     pub fn bidi_paired_bracket(self) -> char { map16(&UCD_BIDI_PAIRED, self.0).unwrap_or(self.0) }
+
+    // misc
+    pub fn numeric_type(self) -> Option<NumericType> { search_range(&UCD_NUMTYPE, self.0) }
+    pub fn numeric_value(self) -> Option<Number> {
+        search(&UCD_NUMVAL, self.0).map(|i| {
+            match UCD_NUMS[i as usize] {
+                (num, 1) => Number::Integer(num),
+                (num, den) => Number::Rational(num as i32, den as u32)
+            }
+        })
+    }
 }

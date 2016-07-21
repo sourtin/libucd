@@ -70,29 +70,8 @@ fn age() { test("./tests/data/age.txt", |i, cp, line| {
     if a1 != a2 { panic!("{}: {:?} {:?}", i, a1, a2); }
 });}
 
-#[test]
-fn block() { test("./tests/data/block.txt", |i, cp, line| {
-    let b1 = match cp.block() {
-        None => None,
-        Some(blk) => Some(blk as u32)
-    };
-
-    let b2 = if line.chars().next() == Some('-') {
-        None
-    } else {
-        Some(line.parse::<u32>().unwrap())
-    };
-
-    if b1 != b2 { panic!("{}: {:?} {:?}", i, b1, b2); }
-});}
-
-#[test]
-fn category() { test("./tests/data/cat.txt", |i, cp, line| {
-    let c1 = cp.category() as u32;
-    let c2 = line.parse::<u32>().unwrap();
-    if c1 != c2 { panic!("{}: {:?} {:?}", i, c1, c2); }
-});}
-
+#[test] fn block() { test_oint("./tests/data/block.txt", |cp| cp.block().map(|b| b as u32)); }
+#[test] fn category() { test_int("./tests/data/cat.txt", |cp| cp.category() as u32); }
 #[test] fn combining_class() { test_int("./tests/data/ccc.txt", |cp| cp.combining_class() as u32); }
 #[test] fn bidi_control() { test_bool("./tests/data/bidi-control.txt", |cp| cp.bidi_control()); }
 #[test] fn bidi_class() { test_int("./tests/data/bidi-class.txt", |cp| cp.bidi_class() as u32); }
@@ -111,4 +90,20 @@ fn bidi_paired_bracket_type() { test("./tests/data/bidi-bratype.txt", |i, cp, li
     };
 
     if b1 != b2 { panic!("{}: {:?} {:?}", i, b1, b2); }
-}); }
+});}
+
+#[test]
+fn numeric_value() { test("./tests/data/numval.txt", |i, cp, line| {
+    let n1 = cp.numeric_value();
+
+    let ls: Vec<&str> = line.splitn(2, ',').collect();
+    let n2 = match ls[1].parse::<u32>().unwrap() {
+        0 => None,
+        1 => Some(ucd::Number::Integer(ls[0].parse::<i64>().unwrap())),
+        den => Some(ucd::Number::Rational(ls[0].parse::<i32>().unwrap(), den))
+    };
+
+    if n1 != n2 { panic!("{}: {:?} {:?}", i, n1, n2); }
+});}
+
+#[test] fn numeric_type() { test_oint("./tests/data/numtype.txt", |cp| cp.numeric_type().map(|t| t as u32)); }
