@@ -145,7 +145,7 @@ class Codepoint:
     join_class = _raw('jt')
     join_group = _raw('jg')
     join_control = _boolean('Join_C')
-    libebreak = _raw('lb')
+    linebreak = _raw('lb')
     ea_width = _raw('ea')
 
     case_is_upper = _boolean('Upper')
@@ -241,7 +241,7 @@ class Codepoint:
                 'quick_nfkc', 'quick_nfkd', 'expanding_nfc', 'expanding_nfd',
                 'expanding_nfkc', 'expanding_nfkd', 'casefoldclosure_nfkc',
                 'iso_comment', 'numeric_type', 'numeric_value', 'join_class',
-                'join_group', 'join_control', 'libebreak', 'ea_width',
+                'join_group', 'join_control', 'linebreak', 'ea_width',
                 'case_is_upper', 'case_is_upper_other', 'case_is_lower',
                 'case_is_lower_other', 'case_upper', 'case_upper_simple',
                 'case_lower', 'case_lower_simple', 'case_title',
