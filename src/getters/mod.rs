@@ -1,6 +1,7 @@
 use ::tables::*;
 use core::cmp::Ordering::{Equal, Less, Greater};
 use core::char;
+use core::slice;
 
 fn search_range<S>(table: &[((u8,u8,u8),(u8,u8,u8),S)], cp: char) -> Option<S>
     where S: Clone
@@ -56,6 +57,51 @@ fn map16(table: &[(u16,u16)], cp: char) -> Option<char> {
     }
 }
 
+fn cp_decode((c1,c2,c3): (u8,u8,u8)) -> char {
+    let c = (c1 as u32)*65536 + (c2 as u32)*256 + (c3 as u32);
+    unsafe { char::from_u32_unchecked(c) }
+}
+
+enum CharIterInternal {
+    Iterator(slice::Iter<'static, (u8,u8,u8)>),
+    Single(char),
+    Exhausted
+}
+
+pub struct CharIter(CharIterInternal);
+
+impl CharIter {
+    pub fn new(osl: Option<&'static [(u8,u8,u8)]>, cp: ::Codepoint) -> CharIter {
+        CharIter(match osl {
+            Some(sl) => CharIterInternal::Iterator(sl.iter()),
+            None => CharIterInternal::Single(cp.codepoint())
+        })
+    }
+}
+
+impl Iterator for CharIter {
+    type Item = char;
+
+    fn next(&mut self) -> Option<char> {
+        match self.0 {
+            CharIterInternal::Iterator(ref mut it) => it.next().map(|c| cp_decode(*c)),
+            CharIterInternal::Single(c) => {
+                self.0 = CharIterInternal::Exhausted;
+                Some(c)
+            },
+            CharIterInternal::Exhausted => None
+        }
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        match self.0 {
+            CharIterInternal::Iterator(ref it) => it.size_hint(),
+            CharIterInternal::Single(_) => (1, Some(1)),
+            CharIterInternal::Exhausted => (0, Some(0))
+        }
+    }
+}
+
 #[derive(Clone,Copy,Eq,PartialEq,Debug,Ord,PartialOrd)]
 pub enum Number {
     Integer(i64),
@@ -64,6 +110,7 @@ pub enum Number {
 
 impl ::Codepoint {
     // general
+    pub fn codepoint(self) -> char { self.0 }
     pub fn age(self) -> Option<(u8,u8)> { search_range(&UCD_AGE, self.0) }
     pub fn block(self) -> Option<UnicodeBlock> { search_range(&UCD_BLOCK, self.0) }
     pub fn category(self) -> UnicodeCategory {
@@ -236,4 +283,16 @@ impl ::Codepoint {
         match in_ranges(&UCD_QNFKC, self.0) {
             true => Trilean::False,
             false => self.quick_check_nfc() } }
+
+    pub fn uppercase_simple(self) -> char { search(&UCD_CASE_SIMP_UP, self.0).map(cp_decode).unwrap_or(self.codepoint()) }
+    pub fn lowercase_simple(self) -> char { search(&UCD_CASE_SIMP_LW, self.0).map(cp_decode).unwrap_or(self.codepoint()) }
+    pub fn titlecase_simple(self) -> char { search(&UCD_CASE_SIMP_TI, self.0).map(cp_decode).unwrap_or(self.codepoint()) }
+    pub fn casefold_simple(self) -> char { search(&UCD_CASE_SIMP_FD, self.0).map(cp_decode).unwrap_or(self.codepoint()) }
+
+    pub fn uppercase(self) -> CharIter { CharIter::new(search(&UCD_CASE_UP, self.0), self) }
+    pub fn lowercase(self) -> CharIter { CharIter::new(search(&UCD_CASE_LW, self.0), self) }
+    pub fn titlecase(self) -> CharIter { CharIter::new(search(&UCD_CASE_TI, self.0), self) }
+    pub fn casefold(self) -> CharIter { CharIter::new(search(&UCD_CASE_FD, self.0), self) }
+    pub fn casefold_nfkc(self) -> CharIter { CharIter::new(search(&UCD_CASE_FD_NFKC, self.0), self) }
+    pub fn casefold_nfkc_closure(self) -> CharIter { CharIter::new(search(&UCD_CASE_FD_CLOS, self.0), self) }
 }

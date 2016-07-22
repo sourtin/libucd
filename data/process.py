@@ -160,7 +160,7 @@ class Codepoint:
     case_title = _codepoints('tc')
     case_title_simple = _codepoint('stc')
     case_fold = _codepoints('cf')
-    case_fold_simple = _codepoints('scf')
+    case_fold_simple = _codepoint('scf')
     case_fold_nfkc = _codepoints('NFKC_CF')
 
     case_ignorable = _boolean('CI')
