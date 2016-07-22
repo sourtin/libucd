@@ -70,23 +70,36 @@ if False:
             b2 = b if b is not True else cp.codepoint()
             print('%d' % b2, file=f_bpb)
 
-with open(base_test % "numval", 'w') as f_nv, \
-     open(base_test % "numtype", 'w') as f_nt, \
-     open(base_test % "eawidth", 'w') as f_ea, \
-     open(base_test % "linebreak", 'w') as f_lb, \
-     open(base_test % "deprec", 'w') as f_dep, \
-     open(base_test % "varsel", 'w') as f_vs, \
-     open(base_test % "nonchar", 'w') as f_nc:
+if False:
+    with open(base_test % "numval", 'w') as f_nv, \
+         open(base_test % "numtype", 'w') as f_nt, \
+         open(base_test % "eawidth", 'w') as f_ea, \
+         open(base_test % "linebreak", 'w') as f_lb, \
+         open(base_test % "deprec", 'w') as f_dep, \
+         open(base_test % "varsel", 'w') as f_vs, \
+         open(base_test % "nonchar", 'w') as f_nc:
 
-    nt_idx = edx(nt_alias, 'None')
-    ea_idx = edx(ea_alias)
-    lb_idx = edx(lb_alias, 'XX')
+        nt_idx = edx(nt_alias, 'None')
+        ea_idx = edx(ea_alias)
+        lb_idx = edx(lb_alias, 'XX')
+
+        for cp in cp_iter():
+            print('%d,%d'%cp.numeric_value(), file=f_nv)
+            print(nt_idx[cp.numeric_type()], file=f_nt)
+            print(ea_idx[cp.ea_width()], file=f_ea)
+            print(lb_idx[cp.linebreak()], file=f_lb)
+            print(b2s[cp.deprecated()], file=f_dep)
+            print(b2s[cp.var_sel()], file=f_vs)
+            print(b2s[cp.nonchar()], file=f_nc)
+
+with open(base_test % "joinctl", 'w') as f_jc, \
+     open(base_test % "jointyp", 'w') as f_jt, \
+     open(base_test % "joingrp", 'w') as f_jg:
+
+    jt_idx = edx(jt_alias)
+    jg_idx = edx(jg_alias)
 
     for cp in cp_iter():
-        print('%d,%d'%cp.numeric_value(), file=f_nv)
-        print(nt_idx[cp.numeric_type()], file=f_nt)
-        print(ea_idx[cp.ea_width()], file=f_ea)
-        print(lb_idx[cp.linebreak()], file=f_lb)
-        print(b2s[cp.deprecated()], file=f_dep)
-        print(b2s[cp.var_sel()], file=f_vs)
-        print(b2s[cp.nonchar()], file=f_nc)
+        print(b2s[cp.join_control()], file=f_jc)
+        print(jt_idx[cp.join_class()], file=f_jt)
+        print(jg_idx[cp.join_group()], file=f_jg)

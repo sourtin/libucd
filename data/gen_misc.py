@@ -3,11 +3,7 @@ from generate import *
 from misc import nt_alias, ea_alias, lb_alias
 
 with open(base % "misc", "w") as f:
-    ranges = cprngs_by('numeric_type', 'numeric_value',
-            'linebreak', 'ea_width')
-            #'join_class', 'join_group', 'join_control',
-            #'script', 'script_extensions',
-            #
+    ranges = cprngs_by('numeric_type', 'numeric_value', 'linebreak', 'ea_width')
 
     """numeric value property
 
@@ -29,17 +25,7 @@ with open(base % "misc", "w") as f:
     assert(len(numbers) < 256)
     table("UCD_NUMS", "[(i64,u8)]", map(str,numbers), file=f)
 
-    t_nv = []
-    del nvs[(0,0)]
-    for n,rs in nvs.items():
-        idx = numbers.index(n)
-        for ri,rj in rs:
-            for cp in range(ri,rj+1):
-                x = "(%s,%d)" % (xcp(cp), idx)
-                t_nv.append((cp,x))
-    t_nv.sort()
-    table("UCD_NUMVAL", "[((u8,u8,u8), u8)]", map(lambda x:x[1], t_nv), file=f)
-
+    transformed_single("u8", numbers.index, "UCD_NUMVAL", nvs, (0,0), file=f)
     enummed("NumericType", nt_alias, "UCD_NUMTYPE", ranges['numeric_type'], 'None', file=f)
     enummed("EastAsianWidth", ea_alias, "UCD_EAWIDTH", ranges['ea_width'], 'N', file=f)
     enummed("LinebreakClass", lb_alias, "UCD_LB", ranges['linebreak'], 'XX', file=f)

@@ -115,4 +115,12 @@ impl ::Codepoint {
         (cp >= 0xfdd0 && cp <= 0xfdef) ||
             ((cp & 0xffff) >= 0xfffe)
     }
+
+    // scripts
+    // > arabic
+    pub fn join_control(self) -> bool { let cp = self.0 as u32; cp == 8204 || cp == 8205 }
+    pub fn joining_group(self) -> JoiningGroup {
+        search(&UCD_JOINGRP, self.0).unwrap_or(JoiningGroup::NoJoiningGroup) }
+    pub fn joining_type(self) -> JoiningType {
+        search_range(&UCD_JOINTYPE, self.0).unwrap_or(JoiningType::NonJoining) }
 }
