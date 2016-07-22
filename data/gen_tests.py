@@ -105,8 +105,26 @@ if False:
             print(b2s[cp.join_control()], file=f_jc)
             print(jt_idx[cp.join_class()], file=f_jt)
             print(jg_idx[cp.join_group()], file=f_jg)
-
 if True:
+    with open(base_test % "hangulst", 'w') as f_hst:
+
+        hst_idx = edx(hst_alias, 'NA')
+
+        for cp in cp_iter():
+            print(hst_idx[cp.hangul_syll_type()], file=f_hst)
+if False:
+    with open(base_test % "script", 'w') as f_sc, \
+         open(base_test % "scrext", 'w') as f_scx:
+
+        sc_idx = edx(sc_alias, 'Zzzz')
+
+        for cp in cp_iter():
+            scx = cp.script_extensions()
+            x = " ".join(sc_idx[s] for s in scx)
+            print(sc_idx[cp.script()], file=f_sc)
+            print(x, file=f_scx)
+
+if False:
     ss = ['hex_digit_ascii', 'prepended_concatenation_mark', 'hyphen', 'hex_digit',
             'white', 'logical_order_exception', 'term_sentence', 'dash', 'quot',
             'term_punc', 'extender', 'soft_dotted', 'default_ignorable', 'alpha',

@@ -112,9 +112,20 @@ fn numeric_value() { test("./tests/data/numval.txt", |i, cp, line| {
     if n1 != n2 { panic!("{}: {:?} {:?}", i, n1, n2); }
 });}
 
-#[test] fn join_control() { test_bool("./tests/data/joinctl.txt", |cp| cp.join_control()); }
-#[test] fn joining_type() { test_int("./tests/data/jointyp.txt", |cp| cp.joining_type() as u32); }
-#[test] fn joining_group() { test_int("./tests/data/joingrp.txt", |cp| cp.joining_group() as u32); }
+#[test] #[ignore] fn join_control() { test_bool("./tests/data/joinctl.txt", |cp| cp.join_control()); }
+#[test] #[ignore] fn joining_type() { test_int("./tests/data/jointyp.txt", |cp| cp.joining_type() as u32); }
+#[test] #[ignore] fn joining_group() { test_int("./tests/data/joingrp.txt", |cp| cp.joining_group() as u32); }
+#[test] #[ignore] fn hangul_syllable_type() { test_oint("./tests/data/hangulst.txt", |cp| cp.hangul_syllable_type().map(|c| c as u32)); }
+#[test] #[ignore] fn script() { test_oint("./tests/data/script.txt", |cp| cp.script().map(|c| c as u32)); }
+#[test] #[ignore]
+fn script_extensions() { test("./tests/data/scrext.txt", |i, cp, line| {
+    let x1 = cp.script_extensions().map(|s| s.iter().map(|sc| *sc as u32).collect::<Vec<u32>>());
+    let x2: Option<Vec<u32>> = if line.len() > 0 {
+        Some(line.split(' ').map(|v| v.parse::<u32>().unwrap()).collect())
+    } else { None };
+    if x1 != x2 { panic!("{}: {:?} {:?}", i, x1, x2); }
+});}
+
 
 #[test] #[ignore] fn is_ascii_hex_digit() { test_bool("./tests/data/hex-digit-ascii.txt", |cp| cp.is_ascii_hex_digit()); }
 #[test] #[ignore] fn is_preprended_concatenation_mark() { test_bool("./tests/data/prepended-concatenation-mark.txt", |cp| cp.is_preprended_concatenation_mark()); }
