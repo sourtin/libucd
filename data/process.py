@@ -235,35 +235,35 @@ class Codepoint:
 
     def all(self):
         attrs = ['codepoint', 'names', 'age', 'block', 'category', 'comb_class',
-                'bidi_class', 'bidi_mirrored', 'bidi_mirror', 'bidi_control',
-                'bidi_bracket', 'bidi_bracket_type', 'decomp_type', 'decomp_map',
-                'comp_excl', 'comp_excl_full', 'quick_nfc', 'quick_nfd',
-                'quick_nfkc', 'quick_nfkd', 'expanding_nfc', 'expanding_nfd',
-                'expanding_nfkc', 'expanding_nfkd', 'casefoldclosure_nfkc',
-                'iso_comment', 'numeric_type', 'numeric_value', 'join_class',
-                'join_group', 'join_control', 'linebreak', 'ea_width',
-                'case_is_upper', 'case_is_upper_other', 'case_is_lower',
-                'case_is_lower_other', 'case_upper', 'case_upper_simple',
-                'case_lower', 'case_lower_simple', 'case_title',
-                'case_title_simple', 'case_fold', 'case_fold_simple',
-                'case_fold_nfkc', 'case_ignorable', 'cased',
-                'case_changes_casefold', 'case_changes_casefold_nfkc',
-                'case_changes_casemap', 'case_changes_lower',
-                'case_changes_upper', 'case_changes_title', 'script',
-                'script_extensions', 'hangul_syll_type', 'jamo_short_name',
-                'indic_category_syll', 'indic_category_pos', 'id_start',
-                'id_start_other', 'id_start_nfkc', 'id_cont', 'id_cont_other',
-                'id_cont_nfkc', 'patt_syntax', 'patt_white', 'dash', 'quot',
-                'term_punc', 'term_sentence', 'diacritic', 'extender',
-                'prepended_concatenation_mark', 'soft_dotted', 'alpha',
-                'alpha_other', 'math', 'math_other', 'hex_digit',
-                'hex_digit_ascii', 'default_ignorable',
-                'default_ignorable_other', 'logical_order_exception', 'white',
-                'hyphen', 'graph_base', 'graph_ext', 'graph_ext_other',
-                'graph_link', 'break_graph_cluster', 'break_word',
-                'break_sentence', 'ideo', 'ideo_unified',
-                'ideo_desc_seq_bin_op', 'ideo_desc_seq_trin_op',
-                'ideo_desc_seq_radical', 'deprecated', 'var_sel', 'nonchar']
+                 'bidi_class', 'bidi_mirrored', 'bidi_mirror', 'bidi_control',
+                 'bidi_bracket', 'bidi_bracket_type', 'decomp_type', 'decomp_map',
+                 'comp_excl', 'comp_excl_full', 'quick_nfc', 'quick_nfd',
+                 'quick_nfkc', 'quick_nfkd', 'expanding_nfc', 'expanding_nfd',
+                 'expanding_nfkc', 'expanding_nfkd', 'casefoldclosure_nfkc',
+                 'iso_comment', 'numeric_type', 'numeric_value', 'join_class',
+                 'join_group', 'join_control', 'linebreak', 'ea_width',
+                 'case_is_upper', 'case_is_upper_other', 'case_is_lower',
+                 'case_is_lower_other', 'case_upper', 'case_upper_simple',
+                 'case_lower', 'case_lower_simple', 'case_title',
+                 'case_title_simple', 'case_fold', 'case_fold_simple',
+                 'case_fold_nfkc', 'case_ignorable', 'cased',
+                 'case_changes_casefold', 'case_changes_casefold_nfkc',
+                 'case_changes_casemap', 'case_changes_lower',
+                 'case_changes_upper', 'case_changes_title', 'script',
+                 'script_extensions', 'hangul_syll_type', 'jamo_short_name',
+                 'indic_category_syll', 'indic_category_pos', 'id_start',
+                 'id_start_other', 'id_start_nfkc', 'id_cont', 'id_cont_other',
+                 'id_cont_nfkc', 'patt_syntax', 'patt_white', 'dash', 'quot',
+                 'term_punc', 'term_sentence', 'diacritic', 'extender',
+                 'prepended_concatenation_mark', 'soft_dotted', 'alpha',
+                 'alpha_other', 'math', 'math_other', 'hex_digit',
+                 'hex_digit_ascii', 'default_ignorable',
+                 'default_ignorable_other', 'logical_order_exception', 'white',
+                 'hyphen', 'graph_base', 'graph_ext', 'graph_ext_other',
+                 'graph_link', 'break_graph_cluster', 'break_word',
+                 'break_sentence', 'ideo', 'ideo_unified',
+                 'ideo_desc_seq_bin_op', 'ideo_desc_seq_trin_op',
+                 'ideo_desc_seq_radical', 'deprecated', 'var_sel', 'nonchar']
 
         return {attr: getattr(self, attr)() for attr in attrs}
 
@@ -364,14 +364,6 @@ def cprng_from(m):
             continue
 
         cx = cp.codepoint()
-        inr = False
-        for ab in ranges:
-            a,b = ab
-            if a <= cx <= b:
-                inr = True
-                break
-        if inr: continue
-
         if ranges:
             a, b = ranges[-1]
             if b + 1 == cx:
@@ -394,14 +386,6 @@ def cprngs_by(*ms):
             ranges = ranges_[v]
 
             cx = cp.codepoint()
-            inr = False
-            for ab in ranges:
-                a,b = ab
-                if a <= cx <= b:
-                    inr = True
-                    break
-            if inr: continue
-
             if ranges:
                 a, b = ranges[-1]
                 if b + 1 == cx:
