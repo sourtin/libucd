@@ -7,7 +7,9 @@ def edx(alias, default='~~~~~~~~~~~~~~'):
     idx = {}
     for i, (n, _) in enumerate(alias):
         idx[n] = '%d' % i
+    idx[default] = ''
     return idx
+b2s = {False: '0', True: '1'}
 
 if False:
     with open(base_test % "age", 'w') as f_age, \
@@ -55,9 +57,9 @@ if False:
         bidipbt = {None: '-', '(': '(', ')': ')'}
 
         for cp in cp_iter():
-            print('%d' % cp.bidi_control(), file=f_bctl)
+            print(b2s[cp.bidi_control()], file=f_bctl)
             print(bidicl_idx[cp.bidi_class()], file=f_bcls)
-            print('%d' % cp.bidi_mirrored(), file=f_bmrd)
+            print(b2s[cp.bidi_mirrored()], file=f_bmrd)
             print(bidipbt[cp.bidi_bracket_type()], file=f_bbt)
 
             m = cp.bidi_mirror()
@@ -71,7 +73,10 @@ if False:
 with open(base_test % "numval", 'w') as f_nv, \
      open(base_test % "numtype", 'w') as f_nt, \
      open(base_test % "eawidth", 'w') as f_ea, \
-     open(base_test % "linebreak", 'w') as f_lb:
+     open(base_test % "linebreak", 'w') as f_lb, \
+     open(base_test % "deprec", 'w') as f_dep, \
+     open(base_test % "varsel", 'w') as f_vs, \
+     open(base_test % "nonchar", 'w') as f_nc:
 
     nt_idx = edx(nt_alias, 'None')
     ea_idx = edx(ea_alias)
@@ -82,4 +87,6 @@ with open(base_test % "numval", 'w') as f_nv, \
         print(nt_idx[cp.numeric_type()], file=f_nt)
         print(ea_idx[cp.ea_width()], file=f_ea)
         print(lb_idx[cp.linebreak()], file=f_lb)
-
+        print(b2s[cp.deprecated()], file=f_dep)
+        print(b2s[cp.var_sel()], file=f_vs)
+        print(b2s[cp.nonchar()], file=f_nc)
