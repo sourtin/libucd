@@ -2,6 +2,7 @@
 from generate import *
 from blocks import blocks
 from misc import *
+import re
 
 def edx(alias, default='~~~~~~~~~~~~~~'):
     idx = {}
@@ -92,14 +93,29 @@ if False:
             print(b2s[cp.var_sel()], file=f_vs)
             print(b2s[cp.nonchar()], file=f_nc)
 
-with open(base_test % "joinctl", 'w') as f_jc, \
-     open(base_test % "jointyp", 'w') as f_jt, \
-     open(base_test % "joingrp", 'w') as f_jg:
+if False:
+    with open(base_test % "joinctl", 'w') as f_jc, \
+         open(base_test % "jointyp", 'w') as f_jt, \
+         open(base_test % "joingrp", 'w') as f_jg:
 
-    jt_idx = edx(jt_alias)
-    jg_idx = edx(jg_alias)
+        jt_idx = edx(jt_alias)
+        jg_idx = edx(jg_alias)
 
-    for cp in cp_iter():
-        print(b2s[cp.join_control()], file=f_jc)
-        print(jt_idx[cp.join_class()], file=f_jt)
-        print(jg_idx[cp.join_group()], file=f_jg)
+        for cp in cp_iter():
+            print(b2s[cp.join_control()], file=f_jc)
+            print(jt_idx[cp.join_class()], file=f_jt)
+            print(jg_idx[cp.join_group()], file=f_jg)
+
+if True:
+    ss = ['hex_digit_ascii', 'prepended_concatenation_mark', 'hyphen', 'hex_digit',
+            'white', 'logical_order_exception', 'term_sentence', 'dash', 'quot',
+            'term_punc', 'extender', 'soft_dotted', 'default_ignorable', 'alpha',
+            'default_ignorable_other', 'math_other', 'diacritic', 'math', 'alpha_other']
+    fs = {s:open(base_test % re.sub('_', '-', s), 'w') for s in ss}
+    try:
+        for cp in cp_iter():
+            for s in ss:
+                print(b2s[getattr(cp, s)()], file=fs[s])
+    finally:
+        for f in fs.values(): f.close()
+

@@ -2,7 +2,7 @@ use ::tables::*;
 use core::cmp::Ordering::{Equal, Less, Greater};
 use core::char;
 
-pub fn search_range<S>(table: &[((u8,u8,u8),(u8,u8,u8),S)], cp: char) -> Option<S>
+fn search_range<S>(table: &[((u8,u8,u8),(u8,u8,u8),S)], cp: char) -> Option<S>
     where S: Clone
 {
     let cp = cp as u32;
@@ -21,7 +21,7 @@ pub fn search_range<S>(table: &[((u8,u8,u8),(u8,u8,u8),S)], cp: char) -> Option<
     }
 }
 
-pub fn search<S>(table: &[((u8,u8,u8),S)], cp: char) -> Option<S>
+fn search<S>(table: &[((u8,u8,u8),S)], cp: char) -> Option<S>
     where S: Clone
 {
     let ca = cp as u32;
@@ -37,7 +37,12 @@ pub fn search<S>(table: &[((u8,u8,u8),S)], cp: char) -> Option<S>
     }
 }
 
-pub fn map16(table: &[(u16,u16)], cp: char) -> Option<char> {
+fn in_ranges(table: &[((u8,u8,u8),(u8,u8,u8),())], cp: char) -> bool {
+    match search_range(table, cp) { Some(()) => true, None => false } }
+fn in_table(table: &[((u8,u8,u8),())], cp: char) -> bool {
+    match search(table, cp) { Some(()) => true, None => false } }
+
+fn map16(table: &[(u16,u16)], cp: char) -> Option<char> {
     let ca = cp as u32;
     if ca > 65536 { return None; }
     let cb = ca as u16;
@@ -75,10 +80,7 @@ impl ::Codepoint {
     }
     pub fn bidi_class(self) -> BidiClass {
         search_range(&UCD_BIDI_CLASS, self.0).unwrap_or(BidiClass::LeftToRight) }
-    pub fn bidi_mirrored(self) -> bool {
-        match search_range(&UCD_BIDI_MIRRORED, self.0) {
-            Some(()) => true,
-            None => false }}
+    pub fn bidi_mirrored(self) -> bool { in_ranges(&UCD_BIDI_MIRRORED, self.0) }
     pub fn bidi_paired_bracket_type(self) -> Option<BidiPairedBracketType> {
         search_range(&UCD_BIDI_BRATYPE, self.0) }
     pub fn bidi_mirror(self) -> Option<char> { map16(&UCD_BIDI_MIRROR, self.0) }
@@ -123,4 +125,25 @@ impl ::Codepoint {
         search(&UCD_JOINGRP, self.0).unwrap_or(JoiningGroup::NoJoiningGroup) }
     pub fn joining_type(self) -> JoiningType {
         search_range(&UCD_JOINTYPE, self.0).unwrap_or(JoiningType::NonJoining) }
+
+    // function and graphic characteristics
+    pub fn is_ascii_hex_digit(self) -> bool { in_table(&UCD_HEX_DIGIT_ASCII, self.0) }
+    pub fn is_preprended_concatenation_mark(self) -> bool { in_table(&UCD_PREPENDED_CONCATENATION_MARK, self.0) }
+    pub fn is_hyphen(self) -> bool { in_table(&UCD_HYPHEN, self.0) }
+    pub fn is_hex_digit(self) -> bool { in_table(&UCD_HEX_DIGIT, self.0) }
+    pub fn is_whitespace(self) -> bool { in_table(&UCD_WHITE, self.0) }
+    pub fn is_logical_order_exception(self) -> bool { in_table(&UCD_LOGICAL_ORDER_EXCEPTION, self.0) }
+    pub fn is_sentence_terminal(self) -> bool { in_table(&UCD_TERM_SENTENCE, self.0) }
+    pub fn is_dash(self) -> bool { in_table(&UCD_DASH, self.0) }
+    pub fn is_quotation_mark(self) -> bool { in_table(&UCD_QUOT, self.0) }
+    pub fn is_terminal_punctutation(self) -> bool { in_table(&UCD_TERM_PUNC, self.0) }
+    pub fn is_extender(self) -> bool { in_table(&UCD_EXTENDER, self.0) }
+    pub fn is_soft_dotted(self) -> bool { in_table(&UCD_SOFT_DOTTED, self.0) }
+    pub fn is_default_ignorable(self) -> bool { in_ranges(&UCD_DEFAULT_IGNORABLE, self.0) }
+    pub fn is_alphabetic(self) -> bool { in_ranges(&UCD_ALPHA, self.0) }
+    pub fn is_default_ignorable_other(self) -> bool { in_ranges(&UCD_DEFAULT_IGNORABLE_OTHER, self.0) }
+    pub fn is_math_other(self) -> bool { in_ranges(&UCD_MATH_OTHER, self.0) }
+    pub fn is_diacritic(self) -> bool { in_ranges(&UCD_DIACRITIC, self.0) }
+    pub fn is_math(self) -> bool { in_ranges(&UCD_MATH, self.0) }
+    pub fn is_alphabetic_other(self) -> bool { in_ranges(&UCD_ALPHA_OTHER, self.0) }
 }
