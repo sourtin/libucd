@@ -31,6 +31,18 @@ def xcp(cp):
 def xrng(ri, rj, dat):
     return "(%s,%s,%s)" % (xcp(ri),xcp(rj),dat)
 
+def transformed_single(type_sig, transfn, table_name, ranges, default, file=None):
+    t_ = []
+    del ranges[default]
+    for c,rs in ranges.items():
+        cn = transfn(c)
+        for ri,rj in rs:
+            for cp in range(ri,rj+1):
+                x = "(%s,%s)" % (xcp(cp), cn)
+                t_.append((cp,x))
+    t_.sort()
+    table(table_name, "[((u8,u8,u8), %s)]" % type_sig,
+            map(lambda x:x[1], t_), file=file)
 def transformed(type_sig, transfn, table_name, ranges, default, file=None):
     t_ = []
     del ranges[default]
@@ -43,16 +55,22 @@ def transformed(type_sig, transfn, table_name, ranges, default, file=None):
     table(table_name, "[((u8,u8,u8), (u8,u8,u8), %s)]" % type_sig,
             map(lambda x:x[2], t_), file=file)
 
-def enummed(enum_name, aliases, table_name, ranges, default, file=None):
+def enummed(enum_name, aliases, table_name, ranges, default, file=None, tf=transformed):
     enum_map = dict(aliases)
     symbols = [x for _,x in aliases]
     enum(enum_name, symbols, file=file)
-    transformed(enum_name, lambda c: "%s::%s" % (enum_name, enum_map[c]),
+    tf(enum_name, lambda c: "%s::%s" % (enum_name, enum_map[c]),
                     table_name, ranges, default, file)
+def enummed_single(*args, **kwargs):
+    kwargs['tf'] = transformed_single
+    enummed(*args, **kwargs)
 
 def booled(table_name, ranges, default, file=None):
     # use unit type so works with search and search_range fns unmodified
     transformed("()", lambda b:{not default:"()"}[b],
+            table_name, ranges, default, file)
+def booled_single(table_name, ranges, default, file=None):
+    transformed_single("()", lambda b:{not default:"()"}[b],
             table_name, ranges, default, file)
 
 def mapped16(table_name, maps, file=None):

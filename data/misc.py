@@ -35,3 +35,24 @@ lb_alias = [('AI', 'Ambiguous'), ('AL', 'Alphabetic'), ('B2', 'BreakBoth'), ('BA
             ('ZW', 'ZeroWidthSpace'), ('ZWJ', 'ZeroWidthJoiner')]
 
 ea_alias = [('Na','Narrow'), ('W','Wide'), ('N','Neutral'), ('A','Ambiguous'), ('F','FullWidth'), ('H','HalfWidth')]
+
+jt_alias = [('C', 'JoinCausing'), ('D', 'DualJoining'), ('L', 'LeftJoining'),
+            ('R', 'RightJoining'), ('T', 'Transparent'), ('U', 'NonJoining')]
+
+import re
+jg_raw = ['African_Feh', 'African_Noon', 'African_Qaf', 'Ain', 'Alaph', 'Alef', 'Beh',
+          'Beth', 'Burushaski_Yeh_Barree', 'Dal', 'Dalath_Rish', 'E', 'Farsi_Yeh', 'Fe',
+          'Feh', 'Final_Semkath', 'Gaf', 'Gamal', 'Hah', 'He', 'Heh', 'Heh_Goal', 'Heth',
+          'Kaf', 'Kaph', 'Khaph', 'Knotted_Heh', 'Lam', 'Lamadh', 'Manichaean_Aleph',
+          'Manichaean_Ayin', 'Manichaean_Beth', 'Manichaean_Daleth', 'Manichaean_Dhamedh',
+          'Manichaean_Five', 'Manichaean_Gimel', 'Manichaean_Heth', 'Manichaean_Hundred',
+          'Manichaean_Kaph', 'Manichaean_Lamedh', 'Manichaean_Mem', 'Manichaean_Nun',
+          'Manichaean_One', 'Manichaean_Pe', 'Manichaean_Qoph', 'Manichaean_Resh',
+          'Manichaean_Sadhe', 'Manichaean_Samekh', 'Manichaean_Taw', 'Manichaean_Ten',
+          'Manichaean_Teth', 'Manichaean_Thamedh', 'Manichaean_Twenty', 'Manichaean_Waw',
+          'Manichaean_Yodh', 'Manichaean_Zayin', 'Meem', 'Mim', 'No_Joining_Group', 'Noon',
+          'Nun', 'Nya', 'Pe', 'Qaf', 'Qaph', 'Reh', 'Reversed_Pe', 'Rohingya_Yeh', 'Sad',
+          'Sadhe', 'Seen', 'Semkath', 'Shin', 'Straight_Waw', 'Swash_Kaf', 'Syriac_Waw',
+          'Tah', 'Taw', 'Teh_Marbuta', 'Teh_Marbuta_Goal', 'Teth', 'Waw', 'Yeh',
+          'Yeh_Barree', 'Yeh_With_Tail', 'Yudh', 'Yudh_He', 'Zain', 'Zhain']
+jg_alias = [(x, re.sub('_','',x)) for x in jg_raw]
