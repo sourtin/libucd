@@ -116,6 +116,12 @@ fn numeric_value() { test("./tests/data/numval.txt", |i, cp, line| {
 #[test] #[ignore] fn joining_type() { test_int("./tests/data/jointyp.txt", |cp| cp.joining_type() as u32); }
 #[test] #[ignore] fn joining_group() { test_int("./tests/data/joingrp.txt", |cp| cp.joining_group() as u32); }
 #[test] #[ignore] fn hangul_syllable_type() { test_oint("./tests/data/hangulst.txt", |cp| cp.hangul_syllable_type().map(|c| c as u32)); }
+#[test] #[ignore] fn indic_syllabic_category() { test_int("./tests/data/indic-sylcat.txt", |cp| cp.indic_syllabic_category() as u32); }
+#[test] #[ignore] fn indic_positional_category() { test_oint("./tests/data/indic-poscat.txt", |cp| cp.indic_positional_category().map(|c| c as u32)); }
+#[test] #[ignore] fn jamo_short_name() { test("./tests/data/jsn.txt", |i, cp, s2| {
+    let s1 = cp.jamo_short_name().unwrap_or("-");
+    if s1 != s1 { panic!("{}: {:?} {:?}", i, s1, s2); }
+});}
 #[test] #[ignore] fn script() { test_oint("./tests/data/script.txt", |cp| cp.script().map(|c| c as u32)); }
 #[test] #[ignore]
 fn script_extensions() { test("./tests/data/scrext.txt", |i, cp, line| {

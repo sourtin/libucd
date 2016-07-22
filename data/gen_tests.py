@@ -96,22 +96,30 @@ if False:
 if False:
     with open(base_test % "joinctl", 'w') as f_jc, \
          open(base_test % "jointyp", 'w') as f_jt, \
-         open(base_test % "joingrp", 'w') as f_jg:
+         open(base_test % "joingrp", 'w') as f_jg, \
+         open(base_test % "indic-sylcat", 'w') as f_isc, \
+         open(base_test % "indic-poscat", 'w') as f_ipc, \
+         open(base_test % "hangulst", 'w') as f_hst, \
+         open(base_test % "jsn", 'w') as f_jsn:
 
         jt_idx = edx(jt_alias)
         jg_idx = edx(jg_alias)
+        isc_idx = edx(insc_alias)
+        ipc_idx = edx(inpc_alias, 'NA')
+        hst_idx = edx(hst_alias, 'NA')
 
         for cp in cp_iter():
             print(b2s[cp.join_control()], file=f_jc)
             print(jt_idx[cp.join_class()], file=f_jt)
             print(jg_idx[cp.join_group()], file=f_jg)
-if True:
-    with open(base_test % "hangulst", 'w') as f_hst:
-
-        hst_idx = edx(hst_alias, 'NA')
-
-        for cp in cp_iter():
+            print(isc_idx[cp.indic_category_syll()], file=f_isc)
+            print(ipc_idx[cp.indic_category_pos()], file=f_ipc)
             print(hst_idx[cp.hangul_syll_type()], file=f_hst)
+
+            jsn = cp.jamo_short_name()
+            if not jsn and cp.codepoint() != 4363:
+                jsn = "-"
+            print(jsn, file=f_jsn)
 if False:
     with open(base_test % "script", 'w') as f_sc, \
          open(base_test % "scrext", 'w') as f_scx:
