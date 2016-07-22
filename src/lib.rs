@@ -10,3 +10,4 @@ pub use tables::misc::{NumericType, EastAsianWidth, LinebreakClass};
 pub use tables::scripts::{JoiningGroup, JoiningType};
 
 pub use getters::Number;
+pub use getters::CharIter;

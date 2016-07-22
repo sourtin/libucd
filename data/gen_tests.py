@@ -12,6 +12,17 @@ def edx(alias, default='~~~~~~~~~~~~~~'):
     return idx
 b2s = {False: '0', True: '1'}
 
+def c2s(cp, cx=''):
+    if cp is True:
+        return str(cx)
+    elif cp is None:
+        return ''
+    else:
+        return str(cp)
+
+def cs2s(cps, cx=''):
+    return ' '.join(c2s(cp, cx) for cp in cps)
+
 if False:
     with open(base_test % "age", 'w') as f_age, \
          open(base_test % "block", 'w') as f_blk, \
@@ -62,14 +73,8 @@ if False:
             print(bidicl_idx[cp.bidi_class()], file=f_bcls)
             print(b2s[cp.bidi_mirrored()], file=f_bmrd)
             print(bidipbt[cp.bidi_bracket_type()], file=f_bbt)
-
-            m = cp.bidi_mirror()
-            c = '%d'%m if m is not None else ''
-            print(c, file=f_bmr)
-
-            b = cp.bidi_bracket()
-            b2 = b if b is not True else cp.codepoint()
-            print('%d' % b2, file=f_bpb)
+            print(c2s(cp.bidi_mirror()), file=f_bmr)
+            print(c2s(cp.bidi_bracket(), cp.codepoint()), file=f_bpb)
 
 if False:
     with open(base_test % "numval", 'w') as f_nv, \
@@ -165,10 +170,33 @@ if False:
 
 if True:
     with open(base_test % "qnfc", 'w') as f_qnfc, \
-         open(base_test % "qnfkc", 'w') as f_qnfkc:
+         open(base_test % "qnfkc", 'w') as f_qnfkc, \
+         open(base_test % "suc", 'w') as f_suc, \
+         open(base_test % "slc", 'w') as f_slc, \
+         open(base_test % "stc", 'w') as f_stc, \
+         open(base_test % "scf", 'w') as f_scf, \
+         open(base_test % "uc", 'w') as f_uc, \
+         open(base_test % "lc", 'w') as f_lc, \
+         open(base_test % "tc", 'w') as f_tc, \
+         open(base_test % "cf", 'w') as f_cf, \
+         open(base_test % "cf-nfkc", 'w') as f_cfn, \
+         open(base_test % "cf-closure", 'w') as f_cfc:
 
         t2s = edx(tri_alias)
 
         for cp in cp_iter():
+            cx = cp.codepoint()
             print(t2s[cp.quick_nfc()], file=f_qnfc)
             print(t2s[cp.quick_nfkc()], file=f_qnfkc)
+
+            print(c2s(cp.case_upper_simple(), cx), file=f_suc)
+            print(c2s(cp.case_lower_simple(), cx), file=f_slc)
+            print(c2s(cp.case_title_simple(), cx), file=f_stc)
+            print(c2s(cp.case_fold_simple(), cx), file=f_scf)
+
+            print(cs2s(cp.case_upper(), cx), file=f_uc)
+            print(cs2s(cp.case_lower(), cx), file=f_lc)
+            print(cs2s(cp.case_title(), cx), file=f_tc)
+            print(cs2s(cp.case_fold(), cx), file=f_cf)
+            print(cs2s(cp.case_fold_nfkc(), cx), file=f_cfn)
+            print(cs2s(cp.casefoldclosure_nfkc(), cx), file=f_cfc)

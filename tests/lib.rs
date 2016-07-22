@@ -55,6 +55,19 @@ fn test_int<F>(path: &str, func: F)
     where F: Fn(Codepoint) -> u32
 { test_oint(path, |cp| Some(func(cp))); }
 
+fn test_cps<F>(path: &str, func: F)
+    where F: Fn(Codepoint) -> ucd::CharIter
+{
+    test(path, |i, cp, line| {
+        let x1: Vec<u32> = func(cp).map(|c| c as u32).collect();
+        let x2: Vec<u32> = if line.len() > 0 {
+            line.split(' ').map(|v| v.parse::<u32>().unwrap()).collect()
+        } else { Vec::new() };
+    
+        if x1 != x2 { panic!("{}: {:?} {:?}", i, x1, x2); }
+    });
+}
+
 #[test] #[ignore]
 fn age() { test("./tests/data/age.txt", |i, cp, line| {
     let chars = line.chars().collect::<Vec<char>>();
@@ -191,5 +204,16 @@ fn script_extensions() { test("./tests/data/scrext.txt", |i, cp, line| {
 #[test] #[ignore] fn quick_check_nfd() { test_bool("./tests/data/quick-nfd.txt", |cp| cp.quick_check_nfd()); }
 #[test] #[ignore] fn quick_check_nfkd() { test_bool("./tests/data/quick-nfkd.txt", |cp| cp.quick_check_nfkd()); }
 
-#[test] fn quick_check_nfc() { test_int("./tests/data/qnfc.txt", |cp| cp.quick_check_nfc() as u32); }
-#[test] fn quick_check_nfkc() { test_int("./tests/data/qnfkc.txt", |cp| cp.quick_check_nfkc() as u32); }
+#[test] #[ignore] fn quick_check_nfc() { test_int("./tests/data/qnfc.txt", |cp| cp.quick_check_nfc() as u32); }
+#[test] #[ignore] fn quick_check_nfkc() { test_int("./tests/data/qnfkc.txt", |cp| cp.quick_check_nfkc() as u32); }
+#[test] #[ignore] fn uppercase_simple() { test_int("./tests/data/suc.txt", |cp| cp.uppercase_simple() as u32); }
+#[test] #[ignore] fn lowercase_simple() { test_int("./tests/data/slc.txt", |cp| cp.lowercase_simple() as u32); }
+#[test] #[ignore] fn titlecase_simple() { test_int("./tests/data/stc.txt", |cp| cp.titlecase_simple() as u32); }
+#[test] #[ignore] fn casefold_simple() { test_int("./tests/data/scf.txt", |cp| cp.casefold_simple() as u32); }
+
+#[test] #[ignore] fn uppercase() { test_cps("./tests/data/uc.txt", |cp| cp.uppercase()); }
+#[test] #[ignore] fn lowercase() { test_cps("./tests/data/lc.txt", |cp| cp.lowercase()); }
+#[test] #[ignore] fn titlecase() { test_cps("./tests/data/tc.txt", |cp| cp.titlecase()); }
+#[test] #[ignore] fn casefold() { test_cps("./tests/data/cf.txt", |cp| cp.casefold()); }
+#[test] #[ignore] fn casefold_nfkc() { test_cps("./tests/data/cf-nfkc.txt", |cp| cp.casefold_nfkc()); }
+#[test] #[ignore] fn casefold_nfkc_closure() { test_cps("./tests/data/cf-closure.txt", |cp| cp.casefold_nfkc_closure()); }
