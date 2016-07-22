@@ -115,3 +115,23 @@ fn numeric_value() { test("./tests/data/numval.txt", |i, cp, line| {
 #[test] fn join_control() { test_bool("./tests/data/joinctl.txt", |cp| cp.join_control()); }
 #[test] fn joining_type() { test_int("./tests/data/jointyp.txt", |cp| cp.joining_type() as u32); }
 #[test] fn joining_group() { test_int("./tests/data/joingrp.txt", |cp| cp.joining_group() as u32); }
+
+#[test] #[ignore] fn is_ascii_hex_digit() { test_bool("./tests/data/hex-digit-ascii.txt", |cp| cp.is_ascii_hex_digit()); }
+#[test] #[ignore] fn is_preprended_concatenation_mark() { test_bool("./tests/data/prepended-concatenation-mark.txt", |cp| cp.is_preprended_concatenation_mark()); }
+#[test] #[ignore] fn is_hyphen() { test_bool("./tests/data/hyphen.txt", |cp| cp.is_hyphen()); }
+#[test] #[ignore] fn is_hex_digit() { test_bool("./tests/data/hex-digit.txt", |cp| cp.is_hex_digit()); }
+#[test] #[ignore] fn is_whitespace() { test_bool("./tests/data/white.txt", |cp| cp.is_whitespace()); }
+#[test] #[ignore] fn is_logical_order_exception() { test_bool("./tests/data/logical-order-exception.txt", |cp| cp.is_logical_order_exception()); }
+#[test] #[ignore] fn is_sentence_terminal() { test_bool("./tests/data/term-sentence.txt", |cp| cp.is_sentence_terminal()); }
+#[test] #[ignore] fn is_dash() { test_bool("./tests/data/dash.txt", |cp| cp.is_dash()); }
+#[test] #[ignore] fn is_quotation_mark() { test_bool("./tests/data/quot.txt", |cp| cp.is_quotation_mark()); }
+#[test] #[ignore] fn is_terminal_punctutation() { test_bool("./tests/data/term-punc.txt", |cp| cp.is_terminal_punctutation()); }
+#[test] #[ignore] fn is_extender() { test_bool("./tests/data/extender.txt", |cp| cp.is_extender()); }
+#[test] #[ignore] fn is_soft_dotted() { test_bool("./tests/data/soft-dotted.txt", |cp| cp.is_soft_dotted()); }
+#[test] #[ignore] fn is_default_ignorable() { test_bool("./tests/data/default-ignorable.txt", |cp| cp.is_default_ignorable()); }
+#[test] #[ignore] fn is_alphabetic() { test_bool("./tests/data/alpha.txt", |cp| cp.is_alphabetic()); }
+#[test] #[ignore] fn is_default_ignorable_other() { test_bool("./tests/data/default-ignorable-other.txt", |cp| cp.is_default_ignorable_other()); }
+#[test] #[ignore] fn is_math_other() { test_bool("./tests/data/math-other.txt", |cp| cp.is_math_other()); }
+#[test] #[ignore] fn is_diacritic() { test_bool("./tests/data/diacritic.txt", |cp| cp.is_diacritic()); }
+#[test] #[ignore] fn is_math() { test_bool("./tests/data/math.txt", |cp| cp.is_math()); }
+#[test] #[ignore] fn is_alphabetic_other() { test_bool("./tests/data/alpha-other.txt", |cp| cp.is_alphabetic_other()); }
