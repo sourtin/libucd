@@ -72,7 +72,7 @@ impl ::Codepoint {
     pub fn iso_comment(self) -> &'static str { "" }
 
     // bidi
-    pub fn bidi_control(self) -> bool {
+    pub fn bidi_is_control(self) -> bool {
         match self.0 as u32 {
             1564 | 8206 | 8207 | 8234...8238 | 8294...8297 => true,
             _ => false
@@ -80,7 +80,7 @@ impl ::Codepoint {
     }
     pub fn bidi_class(self) -> BidiClass {
         search_range(&UCD_BIDI_CLASS, self.0).unwrap_or(BidiClass::LeftToRight) }
-    pub fn bidi_mirrored(self) -> bool { in_ranges(&UCD_BIDI_MIRRORED, self.0) }
+    pub fn bidi_is_mirrored(self) -> bool { in_ranges(&UCD_BIDI_MIRRORED, self.0) }
     pub fn bidi_paired_bracket_type(self) -> Option<BidiPairedBracketType> {
         search_range(&UCD_BIDI_BRATYPE, self.0) }
     pub fn bidi_mirror(self) -> Option<char> { map16(&UCD_BIDI_MIRROR, self.0) }
@@ -99,20 +99,20 @@ impl ::Codepoint {
             }
         })
     }
-    pub fn deprecated(self) -> bool {
+    pub fn is_deprecated(self) -> bool {
         match self.0 as u32 {
             329 | 1651 | 3959 | 3961 | 6051 | 6052
                 | 8298...8303 | 9001 | 9002 | 917505 => true,
             _ => false
         }
     }
-    pub fn variation_selector(self) -> bool {
+    pub fn is_variation_selector(self) -> bool {
         let cp = self.0 as u32;
         (cp >= 917760 && cp <= 917999)   ||
             (cp >= 65024 && cp <= 65039) ||
             (cp >= 6155 && cp <= 6157)
     }
-    pub fn noncharacter(self) -> bool {
+    pub fn is_noncharacter(self) -> bool {
         let cp = self.0 as u32;
         (cp >= 0xfdd0 && cp <= 0xfdef) ||
             ((cp & 0xffff) >= 0xfffe)
@@ -172,4 +172,61 @@ impl ::Codepoint {
     pub fn is_diacritic(self) -> bool { in_ranges(&UCD_DIACRITIC, self.0) }
     pub fn is_math(self) -> bool { in_ranges(&UCD_MATH, self.0) }
     pub fn is_alphabetic_other(self) -> bool { in_ranges(&UCD_ALPHA_OTHER, self.0) }
+
+    // remaining bools
+    pub fn changes_when_casefolded(self) -> bool { in_table(&UCD_CASE_CHANGES_CASEFOLD, self.0) }
+    pub fn changes_when_casefolded_nfkc(self) -> bool { in_ranges(&UCD_CASE_CHANGES_CASEFOLD_NFKC, self.0) }
+    pub fn changes_when_casemapped(self) -> bool { in_ranges(&UCD_CASE_CHANGES_CASEMAP, self.0) }
+    pub fn changes_when_lowercased(self) -> bool { in_table(&UCD_CASE_CHANGES_LOWER, self.0) }
+    pub fn changes_when_titlecased(self) -> bool { in_table(&UCD_CASE_CHANGES_TITLE, self.0) }
+    pub fn changes_when_uppercased(self) -> bool { in_table(&UCD_CASE_CHANGES_UPPER, self.0) }
+    pub fn excluded_from_composition(self) -> bool { in_table(&UCD_COMP_EXCL, self.0) }
+    pub fn excluded_from_composition_fully(self) -> bool { in_ranges(&UCD_COMP_EXCL_FULL, self.0) }
+    pub fn expands_on_nfc(self) -> bool { in_table(&UCD_EXPANDING_NFC, self.0) }
+    pub fn expands_on_nfd(self) -> bool { in_ranges(&UCD_EXPANDING_NFD, self.0) }
+    pub fn expands_on_nfkc(self) -> bool { in_ranges(&UCD_EXPANDING_NFKC, self.0) }
+    pub fn expands_on_nfkd(self) -> bool { in_ranges(&UCD_EXPANDING_NFKD, self.0) }
+    pub fn is_case_ignorable(self) -> bool { in_ranges(&UCD_CASE_IGNORABLE, self.0) }
+    pub fn is_cased(self) -> bool { in_ranges(&UCD_CASED, self.0) }
+    pub fn is_grapheme_base(self) -> bool { in_ranges(&UCD_GRAPH_BASE, self.0) }
+    pub fn is_grapheme_extend(self) -> bool { in_ranges(&UCD_GRAPH_EXT, self.0) }
+    pub fn is_grapheme_extend_other(self) -> bool { in_ranges(&UCD_GRAPH_EXT_OTHER, self.0) }
+    pub fn is_grapheme_link(self) -> bool { in_table(&UCD_GRAPH_LINK, self.0) }
+    pub fn is_id_continue(self) -> bool { in_ranges(&UCD_ID_CONT, self.0) }
+    pub fn is_id_continue_nfkc(self) -> bool { in_ranges(&UCD_ID_CONT_NFKC, self.0) }
+    pub fn is_id_continue_other(self) -> bool { 
+        match self.0 as u32 {
+            183 | 903 | 4969...4977 | 6618 => true,
+            _ => false } }
+    pub fn is_id_start(self) -> bool { in_ranges(&UCD_ID_START, self.0) }
+    pub fn is_id_start_nfkc(self) -> bool { in_ranges(&UCD_ID_START_NFKC, self.0) }
+    pub fn is_id_start_other(self) -> bool {
+        match self.0 as u32 {
+            6277 | 6278 | 8472 | 8494 | 12443 | 12444 => true,
+            _ => false } }
+    pub fn is_ideograph(self) -> bool { in_ranges(&UCD_IDEO, self.0) }
+    pub fn is_ideograph_description_sequence_binary_operator(self) -> bool {
+        match self.0 as u32 {
+            12272 | 12273 | 12276...12283 => true,
+            _ => false } }
+    pub fn is_ideograph_description_sequence_radical(self) -> bool {
+        match self.0 as u32 {
+            11904...11929 | 11931...12019 | 12032...12245 => true,
+            _ => false } }
+    pub fn is_ideograph_description_sequence_trinary_operator(self) -> bool { let cp = self.0 as u32; cp == 12274 || cp == 12275 }
+    pub fn is_ideograph_unified(self) -> bool { in_ranges(&UCD_IDEO_UNIFIED, self.0) }
+    pub fn is_lowercase(self) -> bool { in_ranges(&UCD_CASE_IS_LOWER, self.0) }
+    pub fn is_lowercase_other(self) -> bool { in_ranges(&UCD_CASE_IS_LOWER_OTHER, self.0) }
+    pub fn is_pattern_syntax(self) -> bool { in_ranges(&UCD_PATT_SYNTAX, self.0) }
+    pub fn is_pattern_whitespace(self) -> bool {
+        match self.0 as u32 {
+            9...13 | 32 | 133 | 8206 | 8207 | 8232 | 8233 => true,
+            _ => false } }
+    pub fn is_uppercase(self) -> bool { in_ranges(&UCD_CASE_IS_UPPER, self.0) }
+    pub fn is_uppercase_other (self) -> bool {
+        match self.0 as u32 {
+            8544...8559 | 9398...9423 | 127280...127305 | 127312...127337 | 127344...127369 => true,
+            _ => false } }
+    pub fn quick_check_nfd(self) -> bool { !in_ranges(&UCD_QUICK_NFD, self.0) }
+    pub fn quick_check_nfkd(self) -> bool { !in_ranges(&UCD_QUICK_NFKD, self.0) }
 }
