@@ -395,3 +395,20 @@ def cprngs_by(*ms):
     return ranges__
 def cprng_by(m):
     return cprngs_by(m)[m]
+
+def rangify(cps):
+    cps = list(cps)
+    cps.sort()
+    rs = []
+    a,b = -2,-2
+    for c in cps:
+        if b+1 == c:
+            rs[-1] = a,c
+            b = c
+        else:
+            rs.append((c,c))
+            a = b = c
+    return rs
+
+def derangify(rs):
+    return [c for ri,rj in rs for c in range(ri,rj+1)]
