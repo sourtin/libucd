@@ -74,9 +74,9 @@ fn age() { test("./tests/data/age.txt", |i, cp, line| {
 #[test] #[ignore] fn category() { test_int("./tests/data/cat.txt", |cp| cp.category() as u32); }
 #[test] #[ignore] fn combining_class() { test_int("./tests/data/ccc.txt", |cp| cp.combining_class() as u32); }
 
-#[test] #[ignore] fn bidi_control() { test_bool("./tests/data/bidi-control.txt", |cp| cp.bidi_control()); }
+#[test] #[ignore] fn bidi_control() { test_bool("./tests/data/bidi-control.txt", |cp| cp.bidi_is_control()); }
 #[test] #[ignore] fn bidi_class() { test_int("./tests/data/bidi-class.txt", |cp| cp.bidi_class() as u32); }
-#[test] #[ignore] fn bidi_mirrored() { test_bool("./tests/data/bidi-mirrored.txt", |cp| cp.bidi_mirrored()); }
+#[test] #[ignore] fn bidi_mirrored() { test_bool("./tests/data/bidi-mirrored.txt", |cp| cp.bidi_is_mirrored()); }
 #[test] #[ignore] fn bidi_mirror() { test_oint("./tests/data/bidi-mirror.txt", |cp| cp.bidi_mirror().map(|c| c as u32)); }
 #[test] #[ignore] fn bidi_paired() { test_int("./tests/data/bidi-paired.txt", |cp| cp.bidi_paired_bracket() as u32); }
 #[test] #[ignore]
@@ -94,9 +94,9 @@ fn bidi_paired_bracket_type() { test("./tests/data/bidi-bratype.txt", |i, cp, li
 
 #[test] #[ignore] fn ea_width() { test_int("./tests/data/eawidth.txt", |cp| cp.east_asian_width() as u32); }
 #[test] #[ignore] fn linebreak() { test_oint("./tests/data/linebreak.txt", |cp| cp.linebreak_class().map(|c| c as u32)); }
-#[test] #[ignore] fn deprecated() { test_bool("./tests/data/deprec.txt", |cp| cp.deprecated()); }
-#[test] #[ignore] fn variation_selector() { test_bool("./tests/data/varsel.txt", |cp| cp.variation_selector()); }
-#[test] #[ignore] fn noncharacter() { test_bool("./tests/data/nonchar.txt", |cp| cp.noncharacter()); }
+#[test] #[ignore] fn deprecated() { test_bool("./tests/data/deprec.txt", |cp| cp.is_deprecated()); }
+#[test] #[ignore] fn variation_selector() { test_bool("./tests/data/varsel.txt", |cp| cp.is_variation_selector()); }
+#[test] #[ignore] fn noncharacter() { test_bool("./tests/data/nonchar.txt", |cp| cp.is_noncharacter()); }
 #[test] #[ignore] fn numeric_type() { test_oint("./tests/data/numtype.txt", |cp| cp.numeric_type().map(|t| t as u32)); }
 #[test] #[ignore]
 fn numeric_value() { test("./tests/data/numval.txt", |i, cp, line| {
@@ -152,3 +152,41 @@ fn script_extensions() { test("./tests/data/scrext.txt", |i, cp, line| {
 #[test] #[ignore] fn is_diacritic() { test_bool("./tests/data/diacritic.txt", |cp| cp.is_diacritic()); }
 #[test] #[ignore] fn is_math() { test_bool("./tests/data/math.txt", |cp| cp.is_math()); }
 #[test] #[ignore] fn is_alphabetic_other() { test_bool("./tests/data/alpha-other.txt", |cp| cp.is_alphabetic_other()); }
+
+#[test] #[ignore] fn changes_when_casefolded() { test_bool("./tests/data/case-changes-casefold.txt", |cp| cp.changes_when_casefolded()); }
+#[test] #[ignore] fn changes_when_casefolded_nfkc() { test_bool("./tests/data/case-changes-casefold-nfkc.txt", |cp| cp.changes_when_casefolded_nfkc()); }
+#[test] #[ignore] fn changes_when_casemapped() { test_bool("./tests/data/case-changes-casemap.txt", |cp| cp.changes_when_casemapped()); }
+#[test] #[ignore] fn changes_when_lowercased() { test_bool("./tests/data/case-changes-lower.txt", |cp| cp.changes_when_lowercased()); }
+#[test] #[ignore] fn changes_when_titlecased() { test_bool("./tests/data/case-changes-title.txt", |cp| cp.changes_when_titlecased()); }
+#[test] #[ignore] fn changes_when_uppercased() { test_bool("./tests/data/case-changes-upper.txt", |cp| cp.changes_when_uppercased()); }
+#[test] #[ignore] fn excluded_from_composition() { test_bool("./tests/data/comp-excl.txt", |cp| cp.excluded_from_composition()); }
+#[test] #[ignore] fn excluded_from_composition_fully() { test_bool("./tests/data/comp-excl-full.txt", |cp| cp.excluded_from_composition_fully()); }
+#[test] #[ignore] fn expands_on_nfc() { test_bool("./tests/data/expanding-nfc.txt", |cp| cp.expands_on_nfc()); }
+#[test] #[ignore] fn expands_on_nfd() { test_bool("./tests/data/expanding-nfd.txt", |cp| cp.expands_on_nfd()); }
+#[test] #[ignore] fn expands_on_nfkc() { test_bool("./tests/data/expanding-nfkc.txt", |cp| cp.expands_on_nfkc()); }
+#[test] #[ignore] fn expands_on_nfkd() { test_bool("./tests/data/expanding-nfkd.txt", |cp| cp.expands_on_nfkd()); }
+#[test] #[ignore] fn is_case_ignorable() { test_bool("./tests/data/case-ignorable.txt", |cp| cp.is_case_ignorable()); }
+#[test] #[ignore] fn is_cased() { test_bool("./tests/data/cased.txt", |cp| cp.is_cased()); }
+#[test] #[ignore] fn is_grapheme_base() { test_bool("./tests/data/graph-base.txt", |cp| cp.is_grapheme_base()); }
+#[test] #[ignore] fn is_grapheme_extend() { test_bool("./tests/data/graph-ext.txt", |cp| cp.is_grapheme_extend()); }
+#[test] #[ignore] fn is_grapheme_extend_other() { test_bool("./tests/data/graph-ext-other.txt", |cp| cp.is_grapheme_extend_other()); }
+#[test] #[ignore] fn is_grapheme_link() { test_bool("./tests/data/graph-link.txt", |cp| cp.is_grapheme_link()); }
+#[test] #[ignore] fn is_id_continue() { test_bool("./tests/data/id-cont.txt", |cp| cp.is_id_continue()); }
+#[test] #[ignore] fn is_id_continue_nfkc() { test_bool("./tests/data/id-cont-nfkc.txt", |cp| cp.is_id_continue_nfkc()); }
+#[test] #[ignore] fn is_id_continue_other() { test_bool("./tests/data/id-cont-other.txt", |cp| cp.is_id_continue_other()); }
+#[test] #[ignore] fn is_id_start() { test_bool("./tests/data/id-start.txt", |cp| cp.is_id_start()); }
+#[test] #[ignore] fn is_id_start_nfkc() { test_bool("./tests/data/id-start-nfkc.txt", |cp| cp.is_id_start_nfkc()); }
+#[test] #[ignore] fn is_id_start_other() { test_bool("./tests/data/id-start-other.txt", |cp| cp.is_id_start_other()); }
+#[test] #[ignore] fn is_ideograph() { test_bool("./tests/data/ideo.txt", |cp| cp.is_ideograph()); }
+#[test] #[ignore] fn is_ideograph_description_sequence_binary_operator() { test_bool("./tests/data/ideo-desc-seq-bin-op.txt", |cp| cp.is_ideograph_description_sequence_binary_operator()); }
+#[test] #[ignore] fn is_ideograph_description_sequence_radical() { test_bool("./tests/data/ideo-desc-seq-radical.txt", |cp| cp.is_ideograph_description_sequence_radical()); }
+#[test] #[ignore] fn is_ideograph_description_sequence_trinary_operator() { test_bool("./tests/data/ideo-desc-seq-trin-op.txt", |cp| cp.is_ideograph_description_sequence_trinary_operator()); }
+#[test] #[ignore] fn is_ideograph_unified() { test_bool("./tests/data/ideo-unified.txt", |cp| cp.is_ideograph_unified()); }
+#[test] #[ignore] fn is_lowercase() { test_bool("./tests/data/case-is-lower.txt", |cp| cp.is_lowercase()); }
+#[test] #[ignore] fn is_lowercase_other() { test_bool("./tests/data/case-is-lower-other.txt", |cp| cp.is_lowercase_other()); }
+#[test] #[ignore] fn is_pattern_syntax() { test_bool("./tests/data/patt-syntax.txt", |cp| cp.is_pattern_syntax()); }
+#[test] #[ignore] fn is_pattern_whitespace() { test_bool("./tests/data/patt-white.txt", |cp| cp.is_pattern_whitespace()); }
+#[test] #[ignore] fn is_uppercase() { test_bool("./tests/data/case-is-upper.txt", |cp| cp.is_uppercase()); }
+#[test] #[ignore] fn is_uppercase_other() { test_bool("./tests/data/case-is-upper-other.txt", |cp| cp.is_uppercase_other()); }
+#[test] #[ignore] fn quick_check_nfd() { test_bool("./tests/data/quick-nfd.txt", |cp| cp.quick_check_nfd()); }
+#[test] #[ignore] fn quick_check_nfkd() { test_bool("./tests/data/quick-nfkd.txt", |cp| cp.quick_check_nfkd()); }

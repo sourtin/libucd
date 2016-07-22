@@ -145,3 +145,20 @@ if False:
     finally:
         for f in fs.values(): f.close()
 
+if False:
+    ss = ['comp_excl', 'comp_excl_full', 'quick_nfd', 'quick_nfkd', 'expanding_nfc',
+            'expanding_nfd', 'expanding_nfkc', 'expanding_nfkd', 'case_is_upper',
+            'case_is_upper_other', 'case_is_lower', 'case_is_lower_other',
+            'case_ignorable', 'cased', 'case_changes_casefold', 'case_changes_casefold_nfkc',
+            'case_changes_casemap', 'case_changes_lower', 'case_changes_upper',
+            'case_changes_title', 'id_start', 'id_start_other', 'id_start_nfkc', 'id_cont',
+            'id_cont_other', 'id_cont_nfkc', 'patt_syntax', 'patt_white', 'graph_base',
+            'graph_ext', 'graph_ext_other', 'graph_link', 'ideo', 'ideo_unified',
+            'ideo_desc_seq_bin_op', 'ideo_desc_seq_trin_op', 'ideo_desc_seq_radical']
+    fs = {s:open(base_test % re.sub('_', '-', s), 'w') for s in ss}
+    try:
+        for cp in cp_iter():
+            for s in ss:
+                print(b2s[getattr(cp, s)()], file=fs[s])
+    finally:
+        for f in fs.values(): f.close()
