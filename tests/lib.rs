@@ -109,3 +109,6 @@ fn numeric_value() { test("./tests/data/numval.txt", |i, cp, line| {
 #[test] fn numeric_type() { test_oint("./tests/data/numtype.txt", |cp| cp.numeric_type().map(|t| t as u32)); }
 #[test] fn ea_width() { test_int("./tests/data/eawidth.txt", |cp| cp.east_asian_width() as u32); }
 #[test] fn linebreak() { test_oint("./tests/data/linebreak.txt", |cp| cp.linebreak_class().map(|c| c as u32)); }
+#[test] fn deprecated() { test_bool("./tests/data/deprec.txt", |cp| cp.deprecated()); }
+#[test] fn variation_selector() { test_bool("./tests/data/varsel.txt", |cp| cp.variation_selector()); }
+#[test] fn noncharacter() { test_bool("./tests/data/nonchar.txt", |cp| cp.noncharacter()); }

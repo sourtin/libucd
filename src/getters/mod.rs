@@ -69,7 +69,7 @@ impl ::Codepoint {
     // bidi
     pub fn bidi_control(self) -> bool {
         match self.0 as u32 {
-            1564 | 8206...8207 | 8234...8238 | 8294...8297 => true,
+            1564 | 8206 | 8207 | 8234...8238 | 8294...8297 => true,
             _ => false
         }
     }
@@ -96,5 +96,23 @@ impl ::Codepoint {
                 (num, den) => Number::Rational(num as i32, den as u32)
             }
         })
+    }
+    pub fn deprecated(self) -> bool {
+        match self.0 as u32 {
+            329 | 1651 | 3959 | 3961 | 6051 | 6052
+                | 8298...8303 | 9001 | 9002 | 917505 => true,
+            _ => false
+        }
+    }
+    pub fn variation_selector(self) -> bool {
+        let cp = self.0 as u32;
+        (cp >= 917760 && cp <= 917999)   ||
+            (cp >= 65024 && cp <= 65039) ||
+            (cp >= 6155 && cp <= 6157)
+    }
+    pub fn noncharacter(self) -> bool {
+        let cp = self.0 as u32;
+        (cp >= 0xfdd0 && cp <= 0xfdef) ||
+            ((cp & 0xffff) >= 0xfffe)
     }
 }
