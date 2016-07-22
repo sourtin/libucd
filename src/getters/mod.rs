@@ -119,12 +119,33 @@ impl ::Codepoint {
     }
 
     // scripts
+    pub fn script(self) -> Option<Script> { search_range(&UCD_SCRIPT, self.0) }
+    pub fn script_extensions(self) -> Option<&'static [Script]> {
+        match search(&UCD_SCRIPTEXT, self.0) {
+            None => self.script().map(|s| UCD_SCRIPT_MAP[s as usize]),
+            x => x
+        }
+    }
     // > arabic
     pub fn join_control(self) -> bool { let cp = self.0 as u32; cp == 8204 || cp == 8205 }
     pub fn joining_group(self) -> JoiningGroup {
         search(&UCD_JOINGRP, self.0).unwrap_or(JoiningGroup::NoJoiningGroup) }
     pub fn joining_type(self) -> JoiningType {
         search_range(&UCD_JOINTYPE, self.0).unwrap_or(JoiningType::NonJoining) }
+    // > hangul
+    pub fn hangul_syllable_type(self) -> Option<HangulSyllableType> {
+        let cp = self.0 as u32;
+        match cp {
+            4352...4447 | 43360...43388 => Some(HangulSyllableType::LeadingJamo),
+            4448...4519 | 55216...55238 => Some(HangulSyllableType::VowelJamo),
+            4520...4607 | 55243...55291 => Some(HangulSyllableType::TrailingJamo),
+            44032...55203 => Some({
+                if cp % 28 == 16 { HangulSyllableType::LVSyllable }
+                else {HangulSyllableType::LVTSyllable }
+            }),
+            _ => None
+        }
+    }
 
     // function and graphic characteristics
     pub fn is_ascii_hex_digit(self) -> bool { in_table(&UCD_HEX_DIGIT_ASCII, self.0) }
