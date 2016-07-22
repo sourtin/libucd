@@ -1,3 +1,6 @@
+import re
+r2a = lambda raw: [(x, re.sub('_','',x)) for x in raw]
+
 cat_alias = [('Lu', 'UppercaseLetter'), ('Ll', 'LowercaseLetter'), ('Lt', 'TitlecaseLetter'),
              ('Lm', 'ModifierLetter'), ('Lo', 'OtherLetter'), ('Mn', 'NonspacingMark'),
              ('Mc', 'SpacingMark'), ('Me', 'EnclosingMark'), ('Nd', 'DecimalNumber'),
@@ -39,23 +42,21 @@ ea_alias = [('Na','Narrow'), ('W','Wide'), ('N','Neutral'), ('A','Ambiguous'), (
 jt_alias = [('C', 'JoinCausing'), ('D', 'DualJoining'), ('L', 'LeftJoining'),
             ('R', 'RightJoining'), ('T', 'Transparent'), ('U', 'NonJoining')]
 
-import re
-jg_raw = ['African_Feh', 'African_Noon', 'African_Qaf', 'Ain', 'Alaph', 'Alef', 'Beh',
-          'Beth', 'Burushaski_Yeh_Barree', 'Dal', 'Dalath_Rish', 'E', 'Farsi_Yeh', 'Fe',
-          'Feh', 'Final_Semkath', 'Gaf', 'Gamal', 'Hah', 'He', 'Heh', 'Heh_Goal', 'Heth',
-          'Kaf', 'Kaph', 'Khaph', 'Knotted_Heh', 'Lam', 'Lamadh', 'Manichaean_Aleph',
-          'Manichaean_Ayin', 'Manichaean_Beth', 'Manichaean_Daleth', 'Manichaean_Dhamedh',
-          'Manichaean_Five', 'Manichaean_Gimel', 'Manichaean_Heth', 'Manichaean_Hundred',
-          'Manichaean_Kaph', 'Manichaean_Lamedh', 'Manichaean_Mem', 'Manichaean_Nun',
-          'Manichaean_One', 'Manichaean_Pe', 'Manichaean_Qoph', 'Manichaean_Resh',
-          'Manichaean_Sadhe', 'Manichaean_Samekh', 'Manichaean_Taw', 'Manichaean_Ten',
-          'Manichaean_Teth', 'Manichaean_Thamedh', 'Manichaean_Twenty', 'Manichaean_Waw',
-          'Manichaean_Yodh', 'Manichaean_Zayin', 'Meem', 'Mim', 'No_Joining_Group', 'Noon',
-          'Nun', 'Nya', 'Pe', 'Qaf', 'Qaph', 'Reh', 'Reversed_Pe', 'Rohingya_Yeh', 'Sad',
-          'Sadhe', 'Seen', 'Semkath', 'Shin', 'Straight_Waw', 'Swash_Kaf', 'Syriac_Waw',
-          'Tah', 'Taw', 'Teh_Marbuta', 'Teh_Marbuta_Goal', 'Teth', 'Waw', 'Yeh',
-          'Yeh_Barree', 'Yeh_With_Tail', 'Yudh', 'Yudh_He', 'Zain', 'Zhain']
-jg_alias = [(x, re.sub('_','',x)) for x in jg_raw]
+jg_alias = r2a(['African_Feh', 'African_Noon', 'African_Qaf', 'Ain', 'Alaph', 'Alef', 'Beh',
+                'Beth', 'Burushaski_Yeh_Barree', 'Dal', 'Dalath_Rish', 'E', 'Farsi_Yeh', 'Fe',
+                'Feh', 'Final_Semkath', 'Gaf', 'Gamal', 'Hah', 'He', 'Heh', 'Heh_Goal', 'Heth',
+                'Kaf', 'Kaph', 'Khaph', 'Knotted_Heh', 'Lam', 'Lamadh', 'Manichaean_Aleph',
+                'Manichaean_Ayin', 'Manichaean_Beth', 'Manichaean_Daleth', 'Manichaean_Dhamedh',
+                'Manichaean_Five', 'Manichaean_Gimel', 'Manichaean_Heth', 'Manichaean_Hundred',
+                'Manichaean_Kaph', 'Manichaean_Lamedh', 'Manichaean_Mem', 'Manichaean_Nun',
+                'Manichaean_One', 'Manichaean_Pe', 'Manichaean_Qoph', 'Manichaean_Resh',
+                'Manichaean_Sadhe', 'Manichaean_Samekh', 'Manichaean_Taw', 'Manichaean_Ten',
+                'Manichaean_Teth', 'Manichaean_Thamedh', 'Manichaean_Twenty', 'Manichaean_Waw',
+                'Manichaean_Yodh', 'Manichaean_Zayin', 'Meem', 'Mim', 'No_Joining_Group', 'Noon',
+                'Nun', 'Nya', 'Pe', 'Qaf', 'Qaph', 'Reh', 'Reversed_Pe', 'Rohingya_Yeh', 'Sad',
+                'Sadhe', 'Seen', 'Semkath', 'Shin', 'Straight_Waw', 'Swash_Kaf', 'Syriac_Waw',
+                'Tah', 'Taw', 'Teh_Marbuta', 'Teh_Marbuta_Goal', 'Teth', 'Waw', 'Yeh',
+                'Yeh_Barree', 'Yeh_With_Tail', 'Yudh', 'Yudh_He', 'Zain', 'Zhain'])
 
 sc_alias = [('Adlm', 'Adlam'), ('Aghb', 'CaucasianAlbanian'), ('Ahom', 'Ahom'), ('Arab', 'Arabic'),
             ('Armi', 'ImperialAramaic'), ('Armn', 'Armenian'), ('Avst', 'Avestan'), ('Bali', 'Balinese'),
@@ -96,3 +97,15 @@ sc_alias = [('Adlm', 'Adlam'), ('Aghb', 'CaucasianAlbanian'), ('Ahom', 'Ahom'), 
 
 hst_alias = [('L', 'LeadingJamo'), ('V', 'VowelJamo'), ('T', 'TrailingJamo'),
              ('LV', 'LVSyllable'), ('LVT', 'LVTSyllable')]
+
+insc_alias = r2a(['Consonant_Dead', 'Tone_Mark', 'Tone_Letter', 'Vowel_Dependent', 'Number_Joiner', 'Virama',
+                  'Consonant_Head_Letter', 'Number', 'Consonant_Medial', 'Modifying_Letter',
+                  'Consonant_Succeeding_Repha', 'Consonant_Final', 'Avagraha', 'Vowel', 'Vowel_Independent',
+                  'Register_Shifter', 'Consonant_Killer', 'Other', 'Consonant_Subjoined', 'Joiner', 'Nukta',
+                  'Gemination_Mark', 'Invisible_Stacker', 'Consonant_With_Stacker', 'Consonant_Placeholder',
+                  'Consonant_Preceding_Repha', 'Cantillation_Mark', 'Pure_Killer', 'Non_Joiner',
+                  'Syllable_Modifier', 'Brahmi_Joining_Number', 'Bindu', 'Visarga', 'Consonant', 'Consonant_Prefixed'])
+
+inpc_alias = r2a(['Left', 'Right', 'Top_And_Bottom_And_Right', 'Top_And_Left', 'Top_And_Right', 'Top',
+                  'Bottom_And_Right', 'Overstruck', 'Left_And_Right', 'Top_And_Left_And_Right',
+                  'Top_And_Bottom', 'Bottom', 'Visual_Order_Left'])

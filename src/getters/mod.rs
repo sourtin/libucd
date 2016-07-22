@@ -132,7 +132,12 @@ impl ::Codepoint {
         search(&UCD_JOINGRP, self.0).unwrap_or(JoiningGroup::NoJoiningGroup) }
     pub fn joining_type(self) -> JoiningType {
         search_range(&UCD_JOINTYPE, self.0).unwrap_or(JoiningType::NonJoining) }
+    // > indic
+    pub fn indic_syllabic_category(self) -> IndicSyllabicCategory {
+        search_range(&UCD_INSC, self.0).unwrap_or(IndicSyllabicCategory::Other) }
+    pub fn indic_positional_category(self) -> Option<IndicPositionalCategory> { search(&UCD_INPC, self.0) }
     // > hangul
+    pub fn jamo_short_name(self) -> Option<&'static str> { search(&UCD_JSN, self.0) }
     pub fn hangul_syllable_type(self) -> Option<HangulSyllableType> {
         let cp = self.0 as u32;
         match cp {
