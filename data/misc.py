@@ -109,3 +109,5 @@ insc_alias = r2a(['Consonant_Dead', 'Tone_Mark', 'Tone_Letter', 'Vowel_Dependent
 inpc_alias = r2a(['Left', 'Right', 'Top_And_Bottom_And_Right', 'Top_And_Left', 'Top_And_Right', 'Top',
                   'Bottom_And_Right', 'Overstruck', 'Left_And_Right', 'Top_And_Left_And_Right',
                   'Top_And_Bottom', 'Bottom', 'Visual_Order_Left'])
+
+tri_alias = [(False, 'False'), (None, 'Maybe'), (True, 'True')]

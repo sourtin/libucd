@@ -190,3 +190,6 @@ fn script_extensions() { test("./tests/data/scrext.txt", |i, cp, line| {
 #[test] #[ignore] fn is_uppercase_other() { test_bool("./tests/data/case-is-upper-other.txt", |cp| cp.is_uppercase_other()); }
 #[test] #[ignore] fn quick_check_nfd() { test_bool("./tests/data/quick-nfd.txt", |cp| cp.quick_check_nfd()); }
 #[test] #[ignore] fn quick_check_nfkd() { test_bool("./tests/data/quick-nfkd.txt", |cp| cp.quick_check_nfkd()); }
+
+#[test] fn quick_check_nfc() { test_int("./tests/data/qnfc.txt", |cp| cp.quick_check_nfc() as u32); }
+#[test] fn quick_check_nfkc() { test_int("./tests/data/qnfkc.txt", |cp| cp.quick_check_nfkc() as u32); }

@@ -162,3 +162,13 @@ if False:
                 print(b2s[getattr(cp, s)()], file=fs[s])
     finally:
         for f in fs.values(): f.close()
+
+if True:
+    with open(base_test % "qnfc", 'w') as f_qnfc, \
+         open(base_test % "qnfkc", 'w') as f_qnfkc:
+
+        t2s = edx(tri_alias)
+
+        for cp in cp_iter():
+            print(t2s[cp.quick_nfc()], file=f_qnfc)
+            print(t2s[cp.quick_nfkc()], file=f_qnfkc)

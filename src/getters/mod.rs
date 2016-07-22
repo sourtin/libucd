@@ -229,4 +229,11 @@ impl ::Codepoint {
             _ => false } }
     pub fn quick_check_nfd(self) -> bool { !in_ranges(&UCD_QUICK_NFD, self.0) }
     pub fn quick_check_nfkd(self) -> bool { !in_ranges(&UCD_QUICK_NFKD, self.0) }
+
+    //
+    pub fn quick_check_nfc(self) -> Trilean { search_range(&UCD_QNFC, self.0).unwrap_or(Trilean::True) }
+    pub fn quick_check_nfkc(self) -> Trilean {
+        match in_ranges(&UCD_QNFKC, self.0) {
+            true => Trilean::False,
+            false => self.quick_check_nfc() } }
 }
