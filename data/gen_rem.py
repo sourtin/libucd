@@ -33,14 +33,6 @@ with open(base % "rem", 'w') as f:
     t_cfn = []
     t_cfc = []
 
-    def insert(t_, cx, cm):
-        if cm is not True:
-            t_.append("(%s,%s)" % (xcp(cx), xcp(cm)))
-    def inserts(t_, cx, cms):
-        if not (cms and cms[0] is True):
-            x = ", ".join(map(xcp, cms))
-            t_.append("(%s, &[%s])" % (xcp(cx), x))
-
     for cp in cp_iter():
         cx = cp.codepoint()
 

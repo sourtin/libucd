@@ -168,7 +168,7 @@ if False:
     finally:
         for f in fs.values(): f.close()
 
-if True:
+if False:
     with open(base_test % "qnfc", 'w') as f_qnfc, \
          open(base_test % "qnfkc", 'w') as f_qnfkc, \
          open(base_test % "suc", 'w') as f_suc, \
@@ -200,3 +200,23 @@ if True:
             print(cs2s(cp.case_fold(), cx), file=f_cf)
             print(cs2s(cp.case_fold_nfkc(), cx), file=f_cfn)
             print(cs2s(cp.casefoldclosure_nfkc(), cx), file=f_cfc)
+
+if True:
+    with open(base_test % "dmap", 'w') as f_dm, \
+         open(base_test % "dtype", 'w') as f_dt, \
+         open(base_test % "wbrk", 'w') as f_wb, \
+         open(base_test % "sbrk", 'w') as f_sb, \
+         open(base_test % "gcb", 'w') as f_gcb:
+
+        dt_idx = edx(dt_alias, 'none')
+        wb_idx = edx(wb_alias)
+        sb_idx = edx(sb_alias)
+        gcb_idx = edx(gcb_alias)
+
+        for cp in cp_iter():
+            cx = cp.codepoint()
+            print(cs2s(cp.decomp_map(), cx), file=f_dm)
+            print(dt_idx[cp.decomp_type()], file=f_dt)
+            print(wb_idx[cp.break_word()], file=f_wb)
+            print(sb_idx[cp.break_sentence()], file=f_sb)
+            print(gcb_idx[cp.break_graph_cluster()], file=f_gcb)

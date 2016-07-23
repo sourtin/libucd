@@ -295,4 +295,21 @@ impl ::Codepoint {
     pub fn casefold(self) -> CharIter { CharIter::new(search(&UCD_CASE_FD, self.0), self) }
     pub fn casefold_nfkc(self) -> CharIter { CharIter::new(search(&UCD_CASE_FD_NFKC, self.0), self) }
     pub fn casefold_nfkc_closure(self) -> CharIter { CharIter::new(search(&UCD_CASE_FD_CLOS, self.0), self) }
+
+    // decomp
+    pub fn decomposition_map(self) -> CharIter { CharIter::new(search(&UCD_DECOMP_MAP, self.0), self) }
+    pub fn decomposition_type(self) -> Option<DecompositionType> { search_range(&UCD_DECOMP_TYPE, self.0) }
+    pub fn word_break(self) -> WordBreak { search_range(&UCD_WBRK, self.0).unwrap_or(WordBreak::Other) }
+    pub fn sentence_break(self) -> SentenceBreak { search_range(&UCD_SBRK, self.0).unwrap_or(SentenceBreak::Other) }
+    pub fn grapheme_cluster_break(self) -> GraphemeClusterBreak {
+        let cx = self.0.clone();
+        match self.hangul_syllable_type() {
+            Some(HangulSyllableType::LeadingJamo) => GraphemeClusterBreak::LeadingJamo,
+            Some(HangulSyllableType::VowelJamo) => GraphemeClusterBreak::VowelJamo,
+            Some(HangulSyllableType::TrailingJamo) => GraphemeClusterBreak::TrailingJamo,
+            Some(HangulSyllableType::LVSyllable) => GraphemeClusterBreak::LVHangulSyllable,
+            Some(HangulSyllableType::LVTSyllable) => GraphemeClusterBreak::LVTHangulSyllable,
+            None => search_range(&UCD_GCB, cx).unwrap_or(GraphemeClusterBreak::Other)
+        }
+    }
 }
