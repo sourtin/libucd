@@ -80,3 +80,12 @@ def mapped16(table_name, maps, file=None):
         assert(x<65536 and y<65536)
         t_.append("(%d,%d)" % (x,y))
     table(table_name, "[(u16,u16)]", t_, file=file)
+
+def insert(t_, cx, cm):
+    if cm is not True:
+        t_.append("(%s,%s)" % (xcp(cx), xcp(cm)))
+
+def inserts(t_, cx, cms):
+    if not (cms and cms[0] is True):
+        x = ", ".join(map(xcp, cms))
+        t_.append("(%s, &[%s])" % (xcp(cx), x))

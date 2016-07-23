@@ -111,3 +111,29 @@ inpc_alias = r2a(['Left', 'Right', 'Top_And_Bottom_And_Right', 'Top_And_Left', '
                   'Top_And_Bottom', 'Bottom', 'Visual_Order_Left'])
 
 tri_alias = [(False, 'False'), (None, 'Maybe'), (True, 'True')]
+
+dt_alias = [('can', 'Canonical'), ('com', 'Compat'), ('enc', 'Circle'), ('fin', 'Final'),
+            ('font', 'Font'), ('fra', 'Fraction'), ('init', 'Initial'), ('iso', 'Isolated'),
+            ('med', 'Medial'), ('nar', 'Narrow'), ('nb', 'Nobreak'), ('sml', 'Small'),
+            ('sqr', 'Square'), ('sub', 'Sub'), ('sup', 'Super'), ('vert', 'Vertical'), ('wide', 'Wide')]
+
+gcb_alias = [('CN', 'Control'), ('CR', 'CarriageReturn'), ('LF', 'LineFeed'), ('EX', 'Extend'),
+             ('PP', 'Prepend'), ('EM', 'EmojiModifier'), ('EB', 'EmojiModifierBase'),
+             ('EBG', 'EmojiModiferBaseAfterZWJ'), ('GAZ', 'GlueAfterZWJ'), ('ZWJ', 'ZWJ'),
+             ('L', 'LeadingJamo'), ('V', 'VowelJamo'), ('T', 'TrailingJamo'),
+             ('LV', 'LVHangulSyllable'), ('LVT', 'LVTHangulSyllable'),
+             ('RI', 'RegionalIndicator'), ('SM', 'SpacingMark'), ('XX', 'Other')]
+
+wb_alias = [('CR', 'CarriageReturn'), ('DQ', 'DoubleQuote'), ('EM', 'EmojiModifier'),
+            ('EB', 'EmojiModifierBase'), ('EBG', 'EmojiModifierBaseAfterZWJ'),
+            ('EX', 'ExtendNumLet'), ('Extend', 'Extend'), ('FO', 'Format'),
+            ('GAZ', 'GlueAfterZWJ'), ('HL', 'HebrewLetter'), ('KA', 'Katakana'),
+            ('LE', 'ALetter'), ('LF', 'LineFeed'), ('MB', 'MidNumericLetter'),
+            ('ML', 'MidLetter'), ('MN', 'MidNumeric'), ('NL', 'Newline'),
+            ('NU', 'Numeric'), ('RI', 'RegionalIndicator'), ('SQ', 'SingleQuote'),
+            ('XX', 'Other'), ('ZWJ', 'ZeroWidthJoiner')]
+
+sb_alias = [('AT', 'ATerm'), ('CL', 'Close'), ('CR', 'CarriageReturn'), ('EX', 'Extend'),
+            ('FO', 'Format'), ('LE', 'OLetter'), ('LF', 'LineFeed'), ('LO', 'Lowercase'),
+            ('NU', 'Numeric'), ('SC', 'SentenceContinue'), ('SE', 'Separator'), ('SP', 'Space'),
+            ('ST', 'SentenceTerminal'), ('UP', 'Uppercase'), ('XX', 'Other')]
