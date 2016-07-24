@@ -1,0 +1,10 @@
+#!/bin/bash
+./gen_bidi.py
+./gen_bool.py
+./gen_decomp.py
+./gen_func.py
+./gen_general.py
+./gen_misc.py
+./gen_rem.py
+./gen_scripts.py
+./gen_tests.py

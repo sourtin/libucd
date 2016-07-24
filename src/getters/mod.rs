@@ -129,7 +129,7 @@ impl ::Codepoint {
         search_range(&UCD_BIDI_CLASS, self.0).unwrap_or(BidiClass::LeftToRight) }
     pub fn bidi_is_mirrored(self) -> bool { in_ranges(&UCD_BIDI_MIRRORED, self.0) }
     pub fn bidi_paired_bracket_type(self) -> Option<BidiPairedBracketType> {
-        search_range(&UCD_BIDI_BRATYPE, self.0) }
+        search(&UCD_BIDI_BRATYPE, self.0) }
     pub fn bidi_mirror(self) -> Option<char> { map16(&UCD_BIDI_MIRROR, self.0) }
     pub fn bidi_paired_bracket(self) -> char { map16(&UCD_BIDI_PAIRED, self.0).unwrap_or(self.0) }
 
