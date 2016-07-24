@@ -25,9 +25,6 @@ pub use tables::{
     WordBreak
 };
 
-// container type for methods
-pub struct Codepoint(pub char);
-
 // for use with numeric_value
 #[derive(Clone,Copy,Eq,PartialEq,Debug,Ord,PartialOrd)]
 pub enum Number {
@@ -109,10 +106,10 @@ enum CharIterInternal {
 pub struct CharIter(CharIterInternal);
 
 impl CharIter {
-    pub fn new(osl: Option<&'static [(u8,u8,u8)]>, cp: Codepoint) -> CharIter {
+    pub fn new(osl: Option<&'static [(u8,u8,u8)]>, cp: char) -> CharIter {
         CharIter(match osl {
             Some(sl) => CharIterInternal::Iterator(sl.iter()),
-            None => CharIterInternal::Single(cp.codepoint())
+            None => CharIterInternal::Single(cp)
         })
     }
 }
@@ -140,26 +137,147 @@ impl Iterator for CharIter {
     }
 }
 
-impl Codepoint {
+pub trait Codepoint {
     // general
-    pub fn age(self) -> Option<(u8,u8)> {
-        search_range(&tables::UCD_AGE, self.0)
+    fn age(self) -> Option<(u8,u8)>;
+    fn block(self) -> Option<UnicodeBlock>;
+    fn category(self) -> UnicodeCategory;
+    fn codepoint(self) -> char;
+    fn iso_comment(self) -> &'static str;
+
+    // function and appearance
+    fn is_alphabetic(self) -> bool;
+    fn is_alphabetic_other(self) -> bool;
+    fn is_dash(self) -> bool;
+    fn is_default_ignorable(self) -> bool;
+    fn is_default_ignorable_other(self) -> bool;
+    fn is_deprecated(self) -> bool;
+    fn is_diacritic(self) -> bool;
+    fn is_extender(self) -> bool;
+    fn is_hex_digit(self) -> bool;
+    fn is_hex_digit_ascii(self) -> bool;
+    fn is_hyphen(self) -> bool;
+    fn is_logical_order_exception(self) -> bool;
+    fn is_math(self) -> bool;
+    fn is_math_other(self) -> bool;
+    fn is_noncharacter(self) -> bool;
+    fn is_preprended_concatenation_mark(self) -> bool;
+    fn is_quotation_mark(self) -> bool;
+    fn is_sentence_terminal(self) -> bool;
+    fn is_soft_dotted(self) -> bool;
+    fn is_terminal_punctuation(self) -> bool;
+    fn is_variation_selector(self) -> bool;
+    fn is_whitespace(self) -> bool;
+
+    // numeric
+    fn numeric_type(self) -> Option<NumericType>;
+    fn numeric_value(self) -> Option<Number>;
+
+    // identifiers and syntax
+    fn is_id_continue(self) -> bool;
+    fn is_id_continue_nfkc(self) -> bool;
+    fn is_id_continue_other(self) -> bool;
+    fn is_id_start(self) -> bool;
+    fn is_id_start_nfkc(self) -> bool;
+    fn is_id_start_other(self) -> bool;
+    fn is_pattern_syntax(self) -> bool;
+    fn is_pattern_whitespace(self) -> bool;
+
+    // scripts
+    fn east_asian_width(self) -> EastAsianWidth;
+    fn hangul_syllable_type(self) -> Option<HangulSyllableType>;
+    fn jamo_short_name(self) -> Option<&'static str>;
+    fn indic_positional_category(self) -> Option<IndicPositionalCategory>;
+    fn indic_syllabic_category(self) -> IndicSyllabicCategory;
+    fn is_ideograph(self) -> bool;
+    fn is_ideograph_description_sequence_binary_operator(self) -> bool;
+    fn is_ideograph_description_sequence_radical(self) -> bool;
+    fn is_ideograph_description_sequence_trinary_operator(self) -> bool;
+    fn is_ideograph_unified(self) -> bool;
+    fn join_control(self) -> bool;
+    fn joining_group(self) -> JoiningGroup;
+    fn joining_type(self) -> JoiningType;
+    fn script(self) -> Option<Script>;
+    fn script_extensions(self) -> Option<&'static [Script]>;
+
+    // bidirectionality
+    fn bidi_class(self) -> BidiClass;
+    fn bidi_is_control(self) -> bool;
+    fn bidi_is_mirrored(self) -> bool;
+    fn bidi_mirror(self) -> Option<char>;
+    fn bidi_paired_bracket(self) -> char;
+    fn bidi_paired_bracket_type(self) -> Option<BidiPairedBracketType>;
+
+    // case
+    fn casefold(self) -> CharIter;
+    fn casefold_nfkc(self) -> CharIter;
+    fn casefold_nfkc_closure(self) -> CharIter;
+    fn casefold_simple(self) -> char;
+    fn changes_when_casefolded(self) -> bool;
+    fn changes_when_casefolded_nfkc(self) -> bool;
+    fn changes_when_casemapped(self) -> bool;
+    fn changes_when_lowercased(self) -> bool;
+    fn changes_when_titlecased(self) -> bool;
+    fn changes_when_uppercased(self) -> bool;
+    fn is_case_ignorable(self) -> bool;
+    fn is_cased(self) -> bool;
+    fn is_lowercase(self) -> bool;
+    fn is_lowercase_other(self) -> bool;
+    fn is_uppercase(self) -> bool;
+    fn is_uppercase_other (self) -> bool;
+    fn lowercase(self) -> CharIter;
+    fn lowercase_simple(self) -> char;
+    fn titlecase(self) -> CharIter;
+    fn titlecase_simple(self) -> char;
+    fn uppercase(self) -> CharIter;
+    fn uppercase_simple(self) -> char;
+
+    // normalisation
+    fn canonical_combining_class(self) -> u8;
+    fn decomposition_map(self) -> CharIter;
+    fn decomposition_type(self) -> Option<DecompositionType>;
+    fn excluded_from_composition(self) -> bool;
+    fn excluded_from_composition_fully(self) -> bool;
+    fn expands_on_nfc(self) -> bool;
+    fn expands_on_nfd(self) -> bool;
+    fn expands_on_nfkc(self) -> bool;
+    fn expands_on_nfkd(self) -> bool;
+    fn quick_check_nfc(self) -> Trilean;
+    fn quick_check_nfd(self) -> bool;
+    fn quick_check_nfkc(self) -> Trilean;
+    fn quick_check_nfkd(self) -> bool;
+
+    // segmentation
+    fn grapheme_cluster_break(self) -> GraphemeClusterBreak;
+    fn is_grapheme_base(self) -> bool;
+    fn is_grapheme_extend(self) -> bool;
+    fn is_grapheme_extend_other(self) -> bool;
+    fn is_grapheme_link(self) -> bool;
+    fn linebreak_class(self) -> Option<LinebreakClass>;
+    fn sentence_break(self) -> SentenceBreak;
+    fn word_break(self) -> WordBreak;
+}
+
+impl Codepoint for char {
+    // general
+    fn age(self) -> Option<(u8,u8)> {
+        search_range(&tables::UCD_AGE, self)
     }
 
-    pub fn block(self) -> Option<UnicodeBlock> {
-        search_range(&tables::UCD_BLOCK, self.0)
+    fn block(self) -> Option<UnicodeBlock> {
+        search_range(&tables::UCD_BLOCK, self)
     }
 
-    pub fn category(self) -> UnicodeCategory {
-        search_range(&tables::UCD_CAT, self.0)
+    fn category(self) -> UnicodeCategory {
+        search_range(&tables::UCD_CAT, self)
             .unwrap_or(UnicodeCategory::Unassigned)
     }
 
-    pub fn codepoint(self) -> char {
-        self.0
+    fn codepoint(self) -> char {
+        self
     }
 
-    pub fn iso_comment(self) -> &'static str {
+    fn iso_comment(self) -> &'static str {
         ""
     }
 
@@ -167,112 +285,112 @@ impl Codepoint {
 
 
     // function and appearance
-    pub fn is_alphabetic(self) -> bool {
-        in_ranges(&tables::UCD_ALPHA, self.0)
+    fn is_alphabetic(self) -> bool {
+        in_ranges(&tables::UCD_ALPHA, self)
     }
 
-    pub fn is_alphabetic_other(self) -> bool {
-        in_ranges(&tables::UCD_ALPHA_OTHER, self.0)
+    fn is_alphabetic_other(self) -> bool {
+        in_ranges(&tables::UCD_ALPHA_OTHER, self)
     }
 
-    pub fn is_dash(self) -> bool {
-        in_table(&tables::UCD_DASH, self.0)
+    fn is_dash(self) -> bool {
+        in_table(&tables::UCD_DASH, self)
     }
 
-    pub fn is_default_ignorable(self) -> bool {
-        in_ranges(&tables::UCD_DEFAULT_IGNORABLE, self.0)
+    fn is_default_ignorable(self) -> bool {
+        in_ranges(&tables::UCD_DEFAULT_IGNORABLE, self)
     }
 
-    pub fn is_default_ignorable_other(self) -> bool {
-        in_ranges(&tables::UCD_DEFAULT_IGNORABLE_OTHER, self.0)
+    fn is_default_ignorable_other(self) -> bool {
+        in_ranges(&tables::UCD_DEFAULT_IGNORABLE_OTHER, self)
     }
 
-    pub fn is_deprecated(self) -> bool {
-        match self.0 as u32 {
+    fn is_deprecated(self) -> bool {
+        match self as u32 {
             329 | 1651 | 3959 | 3961 | 6051 | 6052 |
                   8298...8303 | 9001 | 9002 | 917505 => true,
             _ => false
         }
     }
-    pub fn is_diacritic(self) -> bool {
-        in_ranges(&tables::UCD_DIACRITIC, self.0)
+    fn is_diacritic(self) -> bool {
+        in_ranges(&tables::UCD_DIACRITIC, self)
     }
 
-    pub fn is_extender(self) -> bool {
-        in_table(&tables::UCD_EXTENDER, self.0)
+    fn is_extender(self) -> bool {
+        in_table(&tables::UCD_EXTENDER, self)
     }
 
-    pub fn is_hex_digit(self) -> bool {
-        in_table(&tables::UCD_HEX_DIGIT, self.0)
+    fn is_hex_digit(self) -> bool {
+        in_table(&tables::UCD_HEX_DIGIT, self)
     }
 
-    pub fn is_hex_digit_ascii(self) -> bool {
-        in_table(&tables::UCD_HEX_DIGIT_ASCII, self.0)
+    fn is_hex_digit_ascii(self) -> bool {
+        in_table(&tables::UCD_HEX_DIGIT_ASCII, self)
     }
 
-    pub fn is_hyphen(self) -> bool {
-        in_table(&tables::UCD_HYPHEN, self.0)
+    fn is_hyphen(self) -> bool {
+        in_table(&tables::UCD_HYPHEN, self)
     }
 
-    pub fn is_logical_order_exception(self) -> bool {
-        in_table(&tables::UCD_LOGICAL_ORDER_EXCEPTION, self.0)
+    fn is_logical_order_exception(self) -> bool {
+        in_table(&tables::UCD_LOGICAL_ORDER_EXCEPTION, self)
     }
 
-    pub fn is_math(self) -> bool {
-        in_ranges(&tables::UCD_MATH, self.0)
+    fn is_math(self) -> bool {
+        in_ranges(&tables::UCD_MATH, self)
     }
 
-    pub fn is_math_other(self) -> bool {
-        in_ranges(&tables::UCD_MATH_OTHER, self.0)
+    fn is_math_other(self) -> bool {
+        in_ranges(&tables::UCD_MATH_OTHER, self)
     }
 
-    pub fn is_noncharacter(self) -> bool {
-        let cp = self.0 as u32;
+    fn is_noncharacter(self) -> bool {
+        let cp = self as u32;
         (cp >= 0xfdd0 && cp <= 0xfdef)
             || ((cp & 0xffff) >= 0xfffe)
     }
 
-    pub fn is_preprended_concatenation_mark(self) -> bool {
-        in_table(&tables::UCD_PREPENDED_CONCATENATION_MARK, self.0)
+    fn is_preprended_concatenation_mark(self) -> bool {
+        in_table(&tables::UCD_PREPENDED_CONCATENATION_MARK, self)
     }
 
-    pub fn is_quotation_mark(self) -> bool {
-        in_table(&tables::UCD_QUOT, self.0)
+    fn is_quotation_mark(self) -> bool {
+        in_table(&tables::UCD_QUOT, self)
     }
 
-    pub fn is_sentence_terminal(self) -> bool {
-        in_table(&tables::UCD_TERM_SENTENCE, self.0)
+    fn is_sentence_terminal(self) -> bool {
+        in_table(&tables::UCD_TERM_SENTENCE, self)
     }
 
-    pub fn is_soft_dotted(self) -> bool {
-        in_table(&tables::UCD_SOFT_DOTTED, self.0)
+    fn is_soft_dotted(self) -> bool {
+        in_table(&tables::UCD_SOFT_DOTTED, self)
     }
 
-    pub fn is_terminal_punctuation(self) -> bool {
-        in_table(&tables::UCD_TERM_PUNC, self.0)
+    fn is_terminal_punctuation(self) -> bool {
+        in_table(&tables::UCD_TERM_PUNC, self)
     }
 
-    pub fn is_variation_selector(self) -> bool {
-        let cp = self.0 as u32;
+    fn is_variation_selector(self) -> bool {
+        let cp = self as u32;
         (cp >= 917760 && cp <= 917999)
             || (cp >= 65024 && cp <= 65039)
             || (cp >= 6155 && cp <= 6157)
     }
 
-    pub fn is_whitespace(self) -> bool {
-        in_table(&tables::UCD_WHITE, self.0)
+    fn is_whitespace(self) -> bool {
+        in_table(&tables::UCD_WHITE, self)
     }
 
 
 
 
     // numeric
-    pub fn numeric_type(self) -> Option<NumericType> {
-        search_range(&tables::UCD_NUMTYPE, self.0)
+    fn numeric_type(self) -> Option<NumericType> {
+        search_range(&tables::UCD_NUMTYPE, self)
     }
 
-    pub fn numeric_value(self) -> Option<Number> {
-        search(&tables::UCD_NUMVAL, self.0).map(|i| {
+    fn numeric_value(self) -> Option<Number> {
+        search(&tables::UCD_NUMVAL, self).map(|i| {
             match tables::UCD_NUMS[i as usize] {
                 (num, 1) => Number::Integer(num),
                 (num, den) => Number::Rational(num as i32, den as u32)
@@ -283,42 +401,42 @@ impl Codepoint {
 
 
     // identifiers and syntax
-    pub fn is_id_continue(self) -> bool {
-        in_ranges(&tables::UCD_ID_CONT, self.0)
+    fn is_id_continue(self) -> bool {
+        in_ranges(&tables::UCD_ID_CONT, self)
     }
 
-    pub fn is_id_continue_nfkc(self) -> bool {
-        in_ranges(&tables::UCD_ID_CONT_NFKC, self.0)
+    fn is_id_continue_nfkc(self) -> bool {
+        in_ranges(&tables::UCD_ID_CONT_NFKC, self)
     }
 
-    pub fn is_id_continue_other(self) -> bool {
-         match self.0 as u32 {
+    fn is_id_continue_other(self) -> bool {
+         match self as u32 {
             183 | 903 | 4969...4977 | 6618 => true,
             _ => false
         }
     }
 
-    pub fn is_id_start(self) -> bool {
-        in_ranges(&tables::UCD_ID_START, self.0)
+    fn is_id_start(self) -> bool {
+        in_ranges(&tables::UCD_ID_START, self)
     }
 
-    pub fn is_id_start_nfkc(self) -> bool {
-        in_ranges(&tables::UCD_ID_START_NFKC, self.0)
+    fn is_id_start_nfkc(self) -> bool {
+        in_ranges(&tables::UCD_ID_START_NFKC, self)
     }
 
-    pub fn is_id_start_other(self) -> bool {
-        match self.0 as u32 {
+    fn is_id_start_other(self) -> bool {
+        match self as u32 {
             6277 | 6278 | 8472 | 8494| 12443 | 12444 => true,
             _ => false
         }
     }
 
-    pub fn is_pattern_syntax(self) -> bool {
-        in_ranges(&tables::UCD_PATT_SYNTAX, self.0)
+    fn is_pattern_syntax(self) -> bool {
+        in_ranges(&tables::UCD_PATT_SYNTAX, self)
     }
 
-    pub fn is_pattern_whitespace(self) -> bool {
-        match self.0 as u32 {
+    fn is_pattern_whitespace(self) -> bool {
+        match self as u32 {
             9...13 | 32 | 133 | 8206
                    | 8207 | 8232 | 8233 => true,
             _ => false
@@ -329,13 +447,13 @@ impl Codepoint {
 
 
     // scripts
-    pub fn east_asian_width(self) -> EastAsianWidth {
-        search_range(&tables::UCD_EAWIDTH, self.0)
+    fn east_asian_width(self) -> EastAsianWidth {
+        search_range(&tables::UCD_EAWIDTH, self)
             .unwrap_or(EastAsianWidth::Neutral)
     }
 
-    pub fn hangul_syllable_type(self) -> Option<HangulSyllableType> {
-        let cp = self.0 as u32;
+    fn hangul_syllable_type(self) -> Option<HangulSyllableType> {
+        let cp = self as u32;
         match cp {
             4352...4447 | 43360...43388 => Some(HangulSyllableType::LeadingJamo),
             4448...4519 | 55216...55238 => Some(HangulSyllableType::VowelJamo),
@@ -348,67 +466,67 @@ impl Codepoint {
         }
     }
 
-    pub fn jamo_short_name(self) -> Option<&'static str> {
-        search(&tables::UCD_JSN, self.0)
+    fn jamo_short_name(self) -> Option<&'static str> {
+        search(&tables::UCD_JSN, self)
     }
 
-    pub fn indic_positional_category(self) -> Option<IndicPositionalCategory> {
-        search(&tables::UCD_INPC, self.0)
+    fn indic_positional_category(self) -> Option<IndicPositionalCategory> {
+        search(&tables::UCD_INPC, self)
     }
 
-    pub fn indic_syllabic_category(self) -> IndicSyllabicCategory {
-        search_range(&tables::UCD_INSC, self.0)
+    fn indic_syllabic_category(self) -> IndicSyllabicCategory {
+        search_range(&tables::UCD_INSC, self)
             .unwrap_or(IndicSyllabicCategory::Other)
     }
 
-    pub fn is_ideograph(self) -> bool {
-        in_ranges(&tables::UCD_IDEO, self.0)
+    fn is_ideograph(self) -> bool {
+        in_ranges(&tables::UCD_IDEO, self)
     }
 
-    pub fn is_ideograph_description_sequence_binary_operator(self) -> bool {
-        match self.0 as u32 {
+    fn is_ideograph_description_sequence_binary_operator(self) -> bool {
+        match self as u32 {
             12272 | 12273 | 12276...12283 => true,
             _ => false
         }
     }
 
-    pub fn is_ideograph_description_sequence_radical(self) -> bool {
-        match self.0 as u32 {
+    fn is_ideograph_description_sequence_radical(self) -> bool {
+        match self as u32 {
             11904...11929 | 11931...12019 | 12032...12245 => true,
             _ => false
         }
     }
 
-    pub fn is_ideograph_description_sequence_trinary_operator(self) -> bool {
-        let cp = self.0 as u32;
+    fn is_ideograph_description_sequence_trinary_operator(self) -> bool {
+        let cp = self as u32;
         cp == 12274 || cp == 12275
     }
 
-    pub fn is_ideograph_unified(self) -> bool {
-        in_ranges(&tables::UCD_IDEO_UNIFIED, self.0)
+    fn is_ideograph_unified(self) -> bool {
+        in_ranges(&tables::UCD_IDEO_UNIFIED, self)
     }
 
-    pub fn join_control(self) -> bool {
-        let cp = self.0 as u32;
+    fn join_control(self) -> bool {
+        let cp = self as u32;
         cp == 8204 || cp == 8205
     }
 
-    pub fn joining_group(self) -> JoiningGroup {
-        search(&tables::UCD_JOINGRP, self.0)
+    fn joining_group(self) -> JoiningGroup {
+        search(&tables::UCD_JOINGRP, self)
             .unwrap_or(JoiningGroup::NoJoiningGroup)
     }
 
-    pub fn joining_type(self) -> JoiningType {
-        search_range(&tables::UCD_JOINTYPE, self.0)
+    fn joining_type(self) -> JoiningType {
+        search_range(&tables::UCD_JOINTYPE, self)
             .unwrap_or(JoiningType::NonJoining)
     }
 
-    pub fn script(self) -> Option<Script> {
-        search_range(&tables::UCD_SCRIPT, self.0)
+    fn script(self) -> Option<Script> {
+        search_range(&tables::UCD_SCRIPT, self)
     }
 
-    pub fn script_extensions(self) -> Option<&'static [Script]> {
-        match search(&tables::UCD_SCRIPTEXT, self.0) {
+    fn script_extensions(self) -> Option<&'static [Script]> {
+        match search(&tables::UCD_SCRIPTEXT, self) {
             None => self.script().map(
                 |s| tables::UCD_SCRIPT_MAP[s as usize]),
             x => x
@@ -419,135 +537,135 @@ impl Codepoint {
 
 
     // bidirectionality
-    pub fn bidi_class(self) -> BidiClass {
-        search_range(&tables::UCD_BIDI_CLASS, self.0)
+    fn bidi_class(self) -> BidiClass {
+        search_range(&tables::UCD_BIDI_CLASS, self)
             .unwrap_or(BidiClass::LeftToRight)
     }
 
-    pub fn bidi_is_control(self) -> bool {
-        match self.0 as u32 {
+    fn bidi_is_control(self) -> bool {
+        match self as u32 {
             1564 | 8206 | 8207 | 8234...8238 | 8294...8297 => true,
             _ => false
         }
     }
 
-    pub fn bidi_is_mirrored(self) -> bool {
-        in_ranges(&tables::UCD_BIDI_MIRRORED, self.0)
+    fn bidi_is_mirrored(self) -> bool {
+        in_ranges(&tables::UCD_BIDI_MIRRORED, self)
     }
 
-    pub fn bidi_mirror(self) -> Option<char> {
-        map16(&tables::UCD_BIDI_MIRROR, self.0)
+    fn bidi_mirror(self) -> Option<char> {
+        map16(&tables::UCD_BIDI_MIRROR, self)
     }
 
-    pub fn bidi_paired_bracket(self) -> char {
-        map16(&tables::UCD_BIDI_PAIRED, self.0)
-            .unwrap_or(self.0)
+    fn bidi_paired_bracket(self) -> char {
+        map16(&tables::UCD_BIDI_PAIRED, self)
+            .unwrap_or(self)
     }
 
-    pub fn bidi_paired_bracket_type(self) -> Option<BidiPairedBracketType> {
-        search(&tables::UCD_BIDI_BRATYPE, self.0)
+    fn bidi_paired_bracket_type(self) -> Option<BidiPairedBracketType> {
+        search(&tables::UCD_BIDI_BRATYPE, self)
     }
 
 
 
 
     // case
-    pub fn casefold(self) -> CharIter {
-        CharIter::new(search(&tables::UCD_CASE_FD, self.0), self)
+    fn casefold(self) -> CharIter {
+        CharIter::new(search(&tables::UCD_CASE_FD, self), self)
     }
 
-    pub fn casefold_nfkc(self) -> CharIter {
-        CharIter::new(search(&tables::UCD_CASE_FD_NFKC, self.0), self)
+    fn casefold_nfkc(self) -> CharIter {
+        CharIter::new(search(&tables::UCD_CASE_FD_NFKC, self), self)
     }
 
-    pub fn casefold_nfkc_closure(self) -> CharIter {
-        CharIter::new(search(&tables::UCD_CASE_FD_CLOS, self.0), self)
+    fn casefold_nfkc_closure(self) -> CharIter {
+        CharIter::new(search(&tables::UCD_CASE_FD_CLOS, self), self)
     }
 
-    pub fn casefold_simple(self) -> char {
-        search(&tables::UCD_CASE_SIMP_FD, self.0)
+    fn casefold_simple(self) -> char {
+        search(&tables::UCD_CASE_SIMP_FD, self)
             .map(cp_decode)
             .unwrap_or(self.codepoint())
     }
 
-    pub fn changes_when_casefolded(self) -> bool {
-        in_table(&tables::UCD_CASE_CHANGES_CASEFOLD, self.0)
+    fn changes_when_casefolded(self) -> bool {
+        in_table(&tables::UCD_CASE_CHANGES_CASEFOLD, self)
     }
 
-    pub fn changes_when_casefolded_nfkc(self) -> bool {
-        in_ranges(&tables::UCD_CASE_CHANGES_CASEFOLD_NFKC, self.0)
+    fn changes_when_casefolded_nfkc(self) -> bool {
+        in_ranges(&tables::UCD_CASE_CHANGES_CASEFOLD_NFKC, self)
     }
 
-    pub fn changes_when_casemapped(self) -> bool {
-        in_ranges(&tables::UCD_CASE_CHANGES_CASEMAP, self.0)
+    fn changes_when_casemapped(self) -> bool {
+        in_ranges(&tables::UCD_CASE_CHANGES_CASEMAP, self)
     }
 
-    pub fn changes_when_lowercased(self) -> bool {
-        in_table(&tables::UCD_CASE_CHANGES_LOWER, self.0)
+    fn changes_when_lowercased(self) -> bool {
+        in_table(&tables::UCD_CASE_CHANGES_LOWER, self)
     }
 
-    pub fn changes_when_titlecased(self) -> bool {
-        in_table(&tables::UCD_CASE_CHANGES_TITLE, self.0)
+    fn changes_when_titlecased(self) -> bool {
+        in_table(&tables::UCD_CASE_CHANGES_TITLE, self)
     }
 
-    pub fn changes_when_uppercased(self) -> bool {
-        in_table(&tables::UCD_CASE_CHANGES_UPPER, self.0)
+    fn changes_when_uppercased(self) -> bool {
+        in_table(&tables::UCD_CASE_CHANGES_UPPER, self)
     }
 
-    pub fn is_case_ignorable(self) -> bool {
-        in_ranges(&tables::UCD_CASE_IGNORABLE, self.0)
+    fn is_case_ignorable(self) -> bool {
+        in_ranges(&tables::UCD_CASE_IGNORABLE, self)
     }
 
-    pub fn is_cased(self) -> bool {
-        in_ranges(&tables::UCD_CASED, self.0)
+    fn is_cased(self) -> bool {
+        in_ranges(&tables::UCD_CASED, self)
     }
 
-    pub fn is_lowercase(self) -> bool {
-        in_ranges(&tables::UCD_CASE_IS_LOWER, self.0)
+    fn is_lowercase(self) -> bool {
+        in_ranges(&tables::UCD_CASE_IS_LOWER, self)
     }
 
-    pub fn is_lowercase_other(self) -> bool {
-        in_ranges(&tables::UCD_CASE_IS_LOWER_OTHER, self.0)
+    fn is_lowercase_other(self) -> bool {
+        in_ranges(&tables::UCD_CASE_IS_LOWER_OTHER, self)
     }
 
-    pub fn is_uppercase(self) -> bool {
-        in_ranges(&tables::UCD_CASE_IS_UPPER, self.0)
+    fn is_uppercase(self) -> bool {
+        in_ranges(&tables::UCD_CASE_IS_UPPER, self)
     }
 
-    pub fn is_uppercase_other (self) -> bool {
-        match self.0 as u32 {
+    fn is_uppercase_other (self) -> bool {
+        match self as u32 {
             8544...8559 | 9398...9423 | 127280...127305
                         | 127312...127337 | 127344...127369 => true,
             _ => false
         }
     }
 
-    pub fn lowercase(self) -> CharIter {
-        CharIter::new(search(&tables::UCD_CASE_LW, self.0), self)
+    fn lowercase(self) -> CharIter {
+        CharIter::new(search(&tables::UCD_CASE_LW, self), self)
     }
 
-    pub fn lowercase_simple(self) -> char {
-        search(&tables::UCD_CASE_SIMP_LW, self.0)
+    fn lowercase_simple(self) -> char {
+        search(&tables::UCD_CASE_SIMP_LW, self)
             .map(cp_decode)
             .unwrap_or(self.codepoint())
     }
 
-    pub fn titlecase(self) -> CharIter {
-        CharIter::new(search(&tables::UCD_CASE_TI, self.0), self)
+    fn titlecase(self) -> CharIter {
+        CharIter::new(search(&tables::UCD_CASE_TI, self), self)
     }
 
-    pub fn titlecase_simple(self) -> char {
-        search(&tables::UCD_CASE_SIMP_TI, self.0)
+    fn titlecase_simple(self) -> char {
+        search(&tables::UCD_CASE_SIMP_TI, self)
             .map(cp_decode)
             .unwrap_or(self.codepoint())
     }
 
-    pub fn uppercase(self) -> CharIter {
-        CharIter::new(search(&tables::UCD_CASE_UP, self.0), self)
+    fn uppercase(self) -> CharIter {
+        CharIter::new(search(&tables::UCD_CASE_UP, self), self)
     }
 
-    pub fn uppercase_simple(self) -> char {
-        search(&tables::UCD_CASE_SIMP_UP, self.0)
+    fn uppercase_simple(self) -> char {
+        search(&tables::UCD_CASE_SIMP_UP, self)
             .map(cp_decode)
             .unwrap_or(self.codepoint())
     }
@@ -556,69 +674,69 @@ impl Codepoint {
 
 
     // normalisation
-    pub fn canonical_combining_class(self) -> u8 {
-        search_range(&tables::UCD_COMBCLS, self.0)
+    fn canonical_combining_class(self) -> u8 {
+        search_range(&tables::UCD_COMBCLS, self)
             .unwrap_or(0)
     }
 
-    pub fn decomposition_map(self) -> CharIter {
-        CharIter::new(search(&tables::UCD_DECOMP_MAP, self.0), self)
+    fn decomposition_map(self) -> CharIter {
+        CharIter::new(search(&tables::UCD_DECOMP_MAP, self), self)
     }
 
-    pub fn decomposition_type(self) -> Option<DecompositionType> {
-        search_range(&tables::UCD_DECOMP_TYPE, self.0)
+    fn decomposition_type(self) -> Option<DecompositionType> {
+        search_range(&tables::UCD_DECOMP_TYPE, self)
     }
 
-    pub fn excluded_from_composition(self) -> bool {
-        in_table(&tables::UCD_COMP_EXCL, self.0)
+    fn excluded_from_composition(self) -> bool {
+        in_table(&tables::UCD_COMP_EXCL, self)
     }
 
-    pub fn excluded_from_composition_fully(self) -> bool {
-        in_ranges(&tables::UCD_COMP_EXCL_FULL, self.0)
+    fn excluded_from_composition_fully(self) -> bool {
+        in_ranges(&tables::UCD_COMP_EXCL_FULL, self)
     }
 
-    pub fn expands_on_nfc(self) -> bool {
-        in_table(&tables::UCD_EXPANDING_NFC, self.0)
+    fn expands_on_nfc(self) -> bool {
+        in_table(&tables::UCD_EXPANDING_NFC, self)
     }
 
-    pub fn expands_on_nfd(self) -> bool {
-        in_ranges(&tables::UCD_EXPANDING_NFD, self.0)
+    fn expands_on_nfd(self) -> bool {
+        in_ranges(&tables::UCD_EXPANDING_NFD, self)
     }
 
-    pub fn expands_on_nfkc(self) -> bool {
-        in_ranges(&tables::UCD_EXPANDING_NFKC, self.0)
+    fn expands_on_nfkc(self) -> bool {
+        in_ranges(&tables::UCD_EXPANDING_NFKC, self)
     }
 
-    pub fn expands_on_nfkd(self) -> bool {
-        in_ranges(&tables::UCD_EXPANDING_NFKD, self.0)
+    fn expands_on_nfkd(self) -> bool {
+        in_ranges(&tables::UCD_EXPANDING_NFKD, self)
     }
 
-    pub fn quick_check_nfc(self) -> Trilean {
-        search_range(&tables::UCD_QNFC, self.0)
+    fn quick_check_nfc(self) -> Trilean {
+        search_range(&tables::UCD_QNFC, self)
             .unwrap_or(Trilean::True)
     }
 
-    pub fn quick_check_nfd(self) -> bool {
-        !in_ranges(&tables::UCD_QUICK_NFD, self.0)
+    fn quick_check_nfd(self) -> bool {
+        !in_ranges(&tables::UCD_QUICK_NFD, self)
     }
 
-    pub fn quick_check_nfkc(self) -> Trilean {
-        match in_ranges(&tables::UCD_QNFKC, self.0) {
+    fn quick_check_nfkc(self) -> Trilean {
+        match in_ranges(&tables::UCD_QNFKC, self) {
             true => Trilean::False,
             false => self.quick_check_nfc()
         }
     }
 
-    pub fn quick_check_nfkd(self) -> bool {
-        !in_ranges(&tables::UCD_QUICK_NFKD, self.0)
+    fn quick_check_nfkd(self) -> bool {
+        !in_ranges(&tables::UCD_QUICK_NFKD, self)
     }
 
 
 
 
     // segmentation
-    pub fn grapheme_cluster_break(self) -> GraphemeClusterBreak {
-        let cx = self.0.clone();
+    fn grapheme_cluster_break(self) -> GraphemeClusterBreak {
+        let cx = self.clone();
         match self.hangul_syllable_type() {
             Some(HangulSyllableType::LeadingJamo)  => GraphemeClusterBreak::LeadingJamo,
             Some(HangulSyllableType::VowelJamo)    => GraphemeClusterBreak::VowelJamo,
@@ -630,33 +748,33 @@ impl Codepoint {
         }
     }
 
-    pub fn is_grapheme_base(self) -> bool {
-        in_ranges(&tables::UCD_GRAPH_BASE, self.0)
+    fn is_grapheme_base(self) -> bool {
+        in_ranges(&tables::UCD_GRAPH_BASE, self)
     }
 
-    pub fn is_grapheme_extend(self) -> bool {
-        in_ranges(&tables::UCD_GRAPH_EXT, self.0)
+    fn is_grapheme_extend(self) -> bool {
+        in_ranges(&tables::UCD_GRAPH_EXT, self)
     }
 
-    pub fn is_grapheme_extend_other(self) -> bool {
-        in_ranges(&tables::UCD_GRAPH_EXT_OTHER, self.0)
+    fn is_grapheme_extend_other(self) -> bool {
+        in_ranges(&tables::UCD_GRAPH_EXT_OTHER, self)
     }
 
-    pub fn is_grapheme_link(self) -> bool {
-        in_table(&tables::UCD_GRAPH_LINK, self.0)
+    fn is_grapheme_link(self) -> bool {
+        in_table(&tables::UCD_GRAPH_LINK, self)
     }
 
-    pub fn linebreak_class(self) -> Option<LinebreakClass> {
-        search_range(&tables::UCD_LB, self.0)
+    fn linebreak_class(self) -> Option<LinebreakClass> {
+        search_range(&tables::UCD_LB, self)
     }
 
-    pub fn sentence_break(self) -> SentenceBreak {
-        search_range(&tables::UCD_SBRK, self.0)
+    fn sentence_break(self) -> SentenceBreak {
+        search_range(&tables::UCD_SBRK, self)
             .unwrap_or(SentenceBreak::Other)
     }
 
-    pub fn word_break(self) -> WordBreak {
-        search_range(&tables::UCD_WBRK, self.0)
+    fn word_break(self) -> WordBreak {
+        search_range(&tables::UCD_WBRK, self)
             .unwrap_or(WordBreak::Other)
     }
 }
