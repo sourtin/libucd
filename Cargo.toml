@@ -2,5 +2,6 @@
 name = "ucd"
 version = "0.1.0"
 authors = ["nitrous <nitrous>"]
+exclude = ["tests/*", "data/*"]
 
 [dependencies]

@@ -7,7 +7,7 @@ with open(base % "bidi", "w") as f:
 
     enummed("BidiClass", bidicl_alias, "UCD_BIDI_CLASS", ranges['bidi_class'], 'L', f)
     booled("UCD_BIDI_MIRRORED", ranges['bidi_mirrored'], False, f)
-    enummed("BidiPairedBracketType", [('(', 'Open'), (')', 'Close')],
+    enummed_single("BidiPairedBracketType", [('(', 'Open'), (')', 'Close')],
                 "UCD_BIDI_BRATYPE", ranges['bidi_bracket_type'], None, f)
 
     d_mirror = []
