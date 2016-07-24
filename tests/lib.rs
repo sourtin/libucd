@@ -6,7 +6,7 @@ use std::io::prelude::*;
 use std::fs::File;
 
 fn test<F>(path: &str, func: F)
-    where F: Fn(usize, Codepoint, &str) -> ()
+    where F: Fn(usize, char, &str) -> ()
 {
     let f = File::open(path).unwrap();
     let reader = BufReader::new(f);
@@ -17,9 +17,7 @@ fn test<F>(path: &str, func: F)
         let line = line.unwrap();
 
         assert!(i < 0x110000);
-        let cp = Codepoint(unsafe {
-            char::from_u32_unchecked(i as u32)
-        });
+        let cp = unsafe { char::from_u32_unchecked(i as u32) };
 
         func(i, cp, &line);
     }
@@ -29,7 +27,7 @@ fn test<F>(path: &str, func: F)
 }
 
 fn test_bool<F>(path: &str, func: F)
-    where F: Fn(Codepoint) -> bool
+    where F: Fn(char) -> bool
 {
     test(path, |i, cp, line| {
         let b1 = func(cp);
@@ -39,12 +37,12 @@ fn test_bool<F>(path: &str, func: F)
             _ => panic!("unexpected test data, line {}", i)
         };
 
-        if b1 != b2 { panic!("{}", i); }
+        if b1 != b2 { panic!("{}: {:?} {:?}", i, b1, b2); }
     });
 }
 
 fn test_oint<F>(path: &str, func: F)
-    where F: Fn(Codepoint) -> Option<u32>
+    where F: Fn(char) -> Option<u32>
 {
     test(path, |i, cp, line| {
         let c1 = func(cp);
@@ -54,13 +52,13 @@ fn test_oint<F>(path: &str, func: F)
 }
 
 fn test_int<F>(path: &str, func: F)
-    where F: Fn(Codepoint) -> u32
+    where F: Fn(char) -> u32
 {
     test_oint(path, |cp| Some(func(cp)));
 }
 
 fn test_cps<F>(path: &str, func: F)
-    where F: Fn(Codepoint) -> ucd::CharIter
+    where F: Fn(char) -> ucd::CharIter
 {
     test(path, |i, cp, line| {
         let x1: Vec<u32> = func(cp).map(|c| c as u32).collect();
@@ -112,7 +110,7 @@ fn category() {
 #[test]
 fn is_alphabetic() {
     test_bool("./tests/data/alpha.txt",
-        |cp| cp.is_alphabetic());
+        |cp| Codepoint::is_alphabetic(cp));
 }
 
 #[test]
@@ -232,7 +230,7 @@ fn is_terminal_punctuation() {
 #[test]
 fn is_whitespace() {
     test_bool("./tests/data/white.txt",
-        |cp| cp.is_whitespace());
+        |cp| Codepoint::is_whitespace(cp));
 }
 
 #[test]
@@ -543,7 +541,7 @@ fn is_cased() {
 #[test]
 fn is_lowercase() {
     test_bool("./tests/data/case-is-lower.txt",
-        |cp| cp.is_lowercase());
+        |cp| Codepoint::is_lowercase(cp));
 }
 
 #[test]
@@ -555,7 +553,7 @@ fn is_lowercase_other() {
 #[test]
 fn is_uppercase() {
     test_bool("./tests/data/case-is-upper.txt",
-        |cp| cp.is_uppercase());
+        |cp| Codepoint::is_uppercase(cp));
 }
 
 #[test]
