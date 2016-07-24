@@ -110,7 +110,7 @@ fn category() {
 #[test]
 fn is_alphabetic() {
     test_bool("./tests/data/alpha.txt",
-        |cp| Codepoint::is_alphabetic(cp));
+        |cp| cp.is_alpha());
 }
 
 #[test]
@@ -230,7 +230,7 @@ fn is_terminal_punctuation() {
 #[test]
 fn is_whitespace() {
     test_bool("./tests/data/white.txt",
-        |cp| Codepoint::is_whitespace(cp));
+        |cp| cp.is_white());
 }
 
 #[test]
@@ -541,7 +541,7 @@ fn is_cased() {
 #[test]
 fn is_lowercase() {
     test_bool("./tests/data/case-is-lower.txt",
-        |cp| Codepoint::is_lowercase(cp));
+        |cp| cp.is_lower());
 }
 
 #[test]
@@ -553,7 +553,7 @@ fn is_lowercase_other() {
 #[test]
 fn is_uppercase() {
     test_bool("./tests/data/case-is-upper.txt",
-        |cp| Codepoint::is_uppercase(cp));
+        |cp| cp.is_upper());
 }
 
 #[test]

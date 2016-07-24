@@ -77,7 +77,7 @@ impl Iterator for CharIter {
     }
 }
 
-pub trait Codepoint {
+pub trait Codepoint where Self: core::marker::Sized {
     // general
     fn age(self) -> Option<(u8,u8)>;
     fn block(self) -> Option<UnicodeBlock>;
@@ -196,6 +196,12 @@ pub trait Codepoint {
     fn linebreak_class(self) -> Option<LinebreakClass>;
     fn sentence_break(self) -> SentenceBreak;
     fn word_break(self) -> WordBreak;
+
+    // account for inbuilt char methods, which seem to be for unicode 8.0
+    fn is_alpha(self) -> bool { Codepoint::is_alphabetic(self) }
+    fn is_lower(self) -> bool { Codepoint::is_lowercase(self) }
+    fn is_upper(self) -> bool { Codepoint::is_uppercase(self) }
+    fn is_white(self) -> bool { Codepoint::is_whitespace(self) }
 }
 
 impl Codepoint for char {
