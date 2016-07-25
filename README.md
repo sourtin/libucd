@@ -2,6 +2,18 @@
 
 This library extends the inbuilt `char` type with the `Codepoint` trait, which implements 100 properties of the UCD (Unicode Character Database). It aims to be fast and compact, and to have minimal dependencies (it does not require the rust standard library so only needs rust's `core` crate).
 
+```rust
+extern crate ucd;
+use ucd::Codepoint;
+
+fn main() {
+    let salawat: char = 'ﷺ';
+    let decomp: String = salawat.decomposition_map().collect();
+    println!("{} -> {}", salawat, decomp);
+    // ﷺ -> صلى الله عليه وسلم
+}
+```
+
 Though the library is fairly extensive, it is not complete. The properties it lacks are:
 
 * Character [names](https://github.com/huonw/unicode_names) and aliases
@@ -22,19 +34,7 @@ Please note that this data has been derived from the flat XML version of the UCD
 
 _Note, in most cases enum values are simply the full name of the property value converted to camelcase. Perhaps I will eventually create a rustdoc version that will be more helpful._
 
-In the tables below, the first column is the name of the property, and the second column is the method name. The methods are implemented via the `ucd::Codepoint` trait on `char`, so can be used simply as:
-
-```rust
-extern crate ucd;
-use ucd::Codepoint;
-
-fn main() {
-    let salawat: char = 'ﷺ';
-    let decomp: String = salawat.decomposition_map().collect();
-    println!("{} -> {}", salawat, decomp);
-    // ﷺ -> صلى الله عليه وسلم
-}
-```
+In the tables below, the first column is the name of the property, and the second column is the method name. The methods are implemented via the `ucd::Codepoint` trait on `char`.
 
 | General | Method | Return Type | Note |
 | ---- | --- | --- | --- |
