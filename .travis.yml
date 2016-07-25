@@ -1,5 +1,6 @@
 language: rust
 script: ./build.sh
+python: "3.5"
 cache:
   directories:
   - tests/data
