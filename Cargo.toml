@@ -1,7 +1,19 @@
 [package]
 name = "ucd"
 version = "0.1.0"
-authors = ["nitrous <nitrous>"]
+authors = ["sourtin <sourtin>"]
+
+homepage = "https://github.com/sourtin/libucd"
+repository = "https://github.com/sourtin/libucd"
+license = "MIT"
+keywords = ["text", "unicode", "ucd", "character"]
+readme = "README.md"
+description = """
+Provide access to most fields of the Unicode Character Database, version 9.0.0.
+It aims to be compact and fast, and does not need the standard library. Note
+that character names are not available.
+"""
+
 exclude = ["tests/*", "data/*"]
 
 [dependencies]
