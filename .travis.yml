@@ -1,2 +1,5 @@
 language: rust
 script: ./build.sh
+cache:
+  directories:
+  - tests/data
