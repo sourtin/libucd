@@ -3,7 +3,7 @@ if [ ! -d tests/data ] || [ $(ls tests/data|wc -l) -lt 99 ]; then
     echo Building test data...
     mkdir -p tests/data
     cd data
-    python ./gen_tests.py
+    python3 ./gen_tests.py
     cd ..
 else
     echo Using cached test data...
