@@ -1,4 +1,4 @@
 #!/bin/bash
-cd tests/data
+cd tests
 tar xf data.tar.xz
 cd ..
