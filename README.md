@@ -1,6 +1,7 @@
 # `libucd`
 
 [![Build Status](https://travis-ci.org/sourtin/libucd.svg?branch=master)](https://travis-ci.org/sourtin/libucd)
+[![crates.io](http://meritbadge.herokuapp.com/ucd)](https://crates.io/crates/ucd)
 
 This library extends the inbuilt `char` type with the `Codepoint` trait, which implements 100 properties of the UCD (Unicode Character Database). It aims to be fast and compact, and to have minimal dependencies (it does not require the rust standard library so only needs rust's `core` crate).
 
