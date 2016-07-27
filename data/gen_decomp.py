@@ -14,5 +14,7 @@ with open(base % "decomp", 'w') as f:
 
     t_dm = []
     for cp in cp_iter():
-        inserts(t_dm, cp.codepoint(), cp.decomp_map())
+        cx = cp.codepoint()
+        if 44032 <= cx <= 55203: continue
+        inserts(t_dm, cx, cp.decomp_map())
     table("UCD_DECOMP_MAP", "[((u8,u8,u8),&'static [(u8,u8,u8)])]", t_dm, file=f)

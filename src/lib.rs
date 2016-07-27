@@ -39,6 +39,7 @@ fn cp_decode((c1,c2,c3): (u8,u8,u8)) -> char {
 
 enum CharIterInternal {
     Iterator(slice::Iter<'static, (u8,u8,u8)>),
+    Double(char, char),
     Single(char),
     Exhausted
 }
@@ -52,6 +53,10 @@ impl CharIter {
             None => CharIterInternal::Single(cp)
         })
     }
+
+    pub fn hangul(a: char, b: char) -> CharIter {
+        CharIter(CharIterInternal::Double(a, b))
+    }
 }
 
 impl Iterator for CharIter {
@@ -60,6 +65,10 @@ impl Iterator for CharIter {
     fn next(&mut self) -> Option<char> {
         match self.0 {
             CharIterInternal::Iterator(ref mut it) => it.next().map(|c| cp_decode(*c)),
+            CharIterInternal::Double(a, b) => {
+                self.0 = CharIterInternal::Single(b);
+                Some(a)
+            },
             CharIterInternal::Single(c) => {
                 self.0 = CharIterInternal::Exhausted;
                 Some(c)
@@ -71,6 +80,7 @@ impl Iterator for CharIter {
     fn size_hint(&self) -> (usize, Option<usize>) {
         match self.0 {
             CharIterInternal::Iterator(ref it) => it.size_hint(),
+            CharIterInternal::Double(_, _) => (2, Some(2)),
             CharIterInternal::Single(_) => (1, Some(1)),
             CharIterInternal::Exhausted => (0, Some(0))
         }
@@ -626,7 +636,38 @@ impl Codepoint for char {
     }
 
     fn decomposition_map(self) -> CharIter {
-        CharIter::new(tables::UCD_DECOMP_MAP.search(self), self)
+        // manually handle arithmetic decomposition mapping
+        // for hangul syllables, cutting out 11172 entries
+        // from the data table; implementation is directly
+        // from the unicode standard, chapter 3.12
+        const SBASE: u32 = 0xac00;
+        const LBASE: u32 = 0x1100;
+        const VBASE: u32 = 0x1161;
+        const TBASE: u32 = 0x11a7;
+        const VCOUNT: u32 = 21;
+        const TCOUNT: u32 = 28;
+        const NCOUNT: u32 = VCOUNT * TCOUNT;
+
+        match self.hangul_syllable_type() {
+            Some(HangulSyllableType::LVSyllable) => unsafe {
+                let sindex = (self as u32) - SBASE;
+                let lindex = sindex / NCOUNT;
+                let vindex = (sindex % NCOUNT) / TCOUNT;
+                CharIter::hangul(
+                    char::from_u32_unchecked(LBASE + lindex),
+                    char::from_u32_unchecked(VBASE + vindex))
+            },
+            Some(HangulSyllableType::LVTSyllable) => unsafe {
+                let sindex = (self as u32) - SBASE;
+                let tindex = sindex % TCOUNT;
+                let lvindex = sindex - tindex;
+                CharIter::hangul(
+                    char::from_u32_unchecked(SBASE + lvindex),
+                    char::from_u32_unchecked(TBASE + tindex))
+            },
+            _ =>
+                CharIter::new(tables::UCD_DECOMP_MAP.search(self), self)
+        }
     }
 
     fn decomposition_type(self) -> Option<DecompositionType> {
