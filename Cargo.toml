@@ -1,6 +1,6 @@
 [package]
 name = "ucd"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["sourtin <sourtin>"]
 
 homepage = "https://github.com/sourtin/libucd"
